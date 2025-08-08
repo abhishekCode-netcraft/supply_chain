@@ -1,0 +1,8 @@
+.sidebar {
+    position: unset !important;
+}
+
+.main-section {
+    padding: 100px 20px;
+    width: 100%;
+}
