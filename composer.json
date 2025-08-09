@@ -7,20 +7,13 @@
     "require": {
         "php": "^8.1",
         "firebase/php-jwt": "^6.10",
-        "google/apiclient": "^2.15",
         "guzzlehttp/guzzle": "^7.2",
-        "intervention/image": "^2.4",
-        "intervention/imagecache": "^2.5.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.3",
         "maatwebsite/excel": "^3.1",
-        "sadiqsalau/laravel-otp": "^1.0",
-        "spatie/dropbox-api": "^1.22",
-        "spatie/flysystem-dropbox": "^3.0",
         "spatie/laravel-permission": "^6.3",
-        "tzsk/collage": "^7.0",
         "weidner/goutte": "^2.3"
     },
     "require-dev": {
