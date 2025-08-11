@@ -9,21 +9,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ListingController;
 use App\Http\Controllers\RoleController;
-use App\Services\GoogleService;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\BackupListingsController;
-use App\Http\Controllers\BulkUploadController;
-use App\Http\Controllers\DatabaseListingController;
-use App\Http\Controllers\ImageMakerController;
-use App\Http\Controllers\PublicationController;
-use App\Http\Controllers\ChatGptController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\GraphicalDashboardController;
-use App\Http\Controllers\DeveloperController;
-
 Illuminate\Support\Facades\Auth::routes();
 /*
 |--------------------------------------------------------------------------

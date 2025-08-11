@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\User;
-use App\Models\UserSession;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class DashboardController extends Controller
 {
@@ -16,25 +15,51 @@ class DashboardController extends Controller
      * 
      * @return void
      */
-    public function __construct()
+    public function __construct() {}
+
+
+
+    public function index()
     {
-        // $this->middleware('role_or_permission:Dashboard', ['only' => ['index']]);
+        $groupAndPaginate = function ($orders, $perPage = 10, $pageName = 'page') {
+            $grouped = $orders->flatMap->items
+                ->groupBy('product_id')
+                ->map(function ($items) {
+                    $firstItem = $items->first();
+                    $firstItem->order_count = $items->count();
+                    return $firstItem;
+                })
+                ->values();
+
+            $page = request()->get($pageName, 1);
+            $pagedData = $grouped->slice(($page - 1) * $perPage, $perPage)->values();
+
+            return new LengthAwarePaginator(
+                $pagedData,
+                $grouped->count(),
+                $perPage,
+                $page,
+                ['path' => request()->url(), 'pageName' => $pageName]
+            );
+        };
+
+        $unshippedOrders = Order::with('items')
+            ->where('order_status', 'unshipped')
+            ->where('order_type', 'products')
+            ->get();
+
+        $unshipped = $groupAndPaginate($unshippedOrders, 10, 'unshipped_page');
+
+        $underProcessOrders = Order::with('items')
+            ->where('order_status', 'under_process')
+            ->where('order_type', 'products')
+            ->get();
+
+        $underProcess = $groupAndPaginate($underProcessOrders, 10, 'underprocess_page');
+
+        return view('dashboard.index', compact('unshipped', 'underProcess'));
     }
-public function index()
-{
-   
-    $unshipped = Order::with('items')
-        ->where('order_status', 'unshipped')
-        ->where('order_type', 'products')
-        ->paginate(10, ['*'], 'unshipped_page'); 
 
-    $underProcess = Order::with('items')
-        ->where('order_status', 'under_process')
-        ->where('order_type', 'products')
-        ->paginate(10, ['*'], 'underprocess_page');
-
-    return view('dashboard.index', compact('unshipped', 'underProcess'));
-}
 
     /**
      * Get Statistics

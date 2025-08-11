@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\UserListingCount;
 use App\Mail\RegisterOtpMail;
 use App\Mail\WelcomeMail;
+use Illuminate\Http\Request;
+
 use App\Mail\StatusNotificationMail;
 
 class UserController extends Controller
@@ -123,19 +125,42 @@ class UserController extends Controller
         return view('auth.enter-otp', ['register' => true]);
     }
 
-    public function register()
+    // public function register()
+    // {
+    //     if (session('otp') == request()->otp) {
+    //         User::create(request()->all())?->syncRoles(request()->input('roles'));
+
+    //         session()->flash('success', __('You have Registered Successfully...'));
+
+    //         return redirect()->route('login');
+    //     } else {
+    //         session()->flash('success', __('Invalid OTP'));
+
+    //         return view('auth.enter-otp', ['register' => true]);
+    //     }
+    // }
+
+     public function register(Request $request)
     {
-        if (session('otp') == request()->otp) {
-            User::create(request()->all())?->syncRoles(request()->input('roles'));
+        // Validation
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'mobile' => 'required|digits_between:8,15|unique:users,mobile',
+            'password' => 'required|string|min:6|confirmed',
+            'status' => 'required|in:0,1',
+        ]);
 
-            session()->flash('success', __('You have Registered Successfully...'));
+        // Create User
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'mobile' => $request->mobile,
+            'status' => $request->status,
+            'password' => Hash::make($request->password),
+        ]);
 
-            return redirect()->route('login');
-        } else {
-            session()->flash('success', __('Invalid OTP'));
-
-            return view('auth.enter-otp', ['register' => true]);
-        }
+        return redirect()->route('login')->with('success', 'Registration successful. Please login.');
     }
 
     /**

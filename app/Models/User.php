@@ -23,23 +23,7 @@ class User extends Authenticatable
         'status',
         'password',
         'mobile',
-        'account_type',
-        'aadhaar_no',
-        'father_name',
-        'mother_name',
-        'state',
-        'pincode',
-        'full_address',
-        'plain_password',
-        'verify_browser',
-        'otp',
-        'profile',
-        'allow_sessions',
-        'posting_rate',
-        'show_health',
-        'otp_feature',
-        'data_transfer',
-        'account_details_change_limitations'
+       
     ];
 
     /**

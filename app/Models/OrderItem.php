@@ -19,12 +19,10 @@ class OrderItem extends Model
         return $this->belongsTo(Order::class, 'order_id', 'order_id');
     }
 
-   public function getCleanThumbAttribute()
-{
+    public function getCleanThumbAttribute()
+    {
+        $url = $this->thumb;
 
-    $url = $this->thumb;
-
-
-    return preg_replace('/\/w80.*$/', '', $url);
-}
+        return preg_replace('/\/w80.*$/', '', $url);
+    }
 }
