@@ -49,8 +49,8 @@ class UserController extends Controller
         $users = User::whereDoesntHave('roles', function ($query) {
             $query->where('name', 'Developer');
         })
-        ->orderBy('id', 'asc')
-        ->paginate(request()->get('users', 10));
+            ->orderBy('id', 'asc')
+            ->paginate(request()->get('users', 10));
 
 
         $allUser = User::whereDoesntHave('roles', function ($query) {
@@ -60,13 +60,13 @@ class UserController extends Controller
         $active = User::whereDoesntHave('roles', function ($query) {
             $query->where('name', 'Developer');
         })
-        ->where('status', 1)->count();
+            ->where('status', 1)->count();
 
         $inactive = User::whereDoesntHave('roles', function ($query) {
             $query->where('name', 'Developer');
         })
-        ->where('status', 0)->count();
-        
+            ->where('status', 0)->count();
+
         return view('accounts.users.index', compact('users', 'allUser', 'active', 'inactive'));
     }
 
@@ -140,27 +140,56 @@ class UserController extends Controller
     //     }
     // }
 
-     public function register(Request $request)
+
+    public function register(Request $request)
     {
-        // Validation
+
         $request->validate([
+
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'mobile' => 'required|digits_between:8,15|unique:users,mobile',
+            'mobile' => 'required|digits_between:8,15',
+            'whatsapp' => 'nullable|digits_between:8,15',
             'password' => 'required|string|min:6|confirmed',
-            'status' => 'required|in:0,1',
+            'alternate_no' => 'nullable|digits_between:8,15',
+            'business_name' => 'required|string|max:255',
+            'business_address' => 'required|string|max:500',
+            'business_email' => 'nullable|email|max:255',
+            'business_phone' => 'nullable|digits_between:8,15',
+
+            'personal_upload' => 'nullable',
+            'business_upload' => 'nullable',
         ]);
 
-        // Create User
-        User::create([
+        $personalFilePath = null;
+        if ($request->hasFile('personal_upload')) {
+            $personalFilePath = $request->file('personal_upload')->store('uploads/personal', 'public');
+        }
+
+        $businessFilePath = null;
+        if ($request->hasFile('business_upload')) {
+            $businessFilePath = $request->file('business_upload')->store('uploads/business', 'public');
+        }
+
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'mobile' => $request->mobile,
-            'status' => $request->status,
+            'whatsapp_no' => $request->whatsapp,
             'password' => Hash::make($request->password),
+            'alternate_no' => $request->alternate_no,
+            'business_name' => $request->business_name,
+            'business_address' => $request->business_address,
+            'business_email' => $request->business_email,
+            'business_phone' => $request->business_phone,
+            'personal_upload' => $personalFilePath,
+            'business_upload' => $businessFilePath,
+            'is_active' => false
+
         ]);
 
-        return redirect()->route('login')->with('success', 'Registration successful. Please login.');
+
+        return redirect()->route('login')->with('success', 'Registration successful');
     }
 
     /**
@@ -302,13 +331,11 @@ class UserController extends Controller
             $body = "We regret to inform you that your account has been Suspended due to unusual activities detected on our platform. This decision has been made to ensure the safety and integrity of our users and services.";
             Mail::to($user->email)->send(new StatusNotificationMail('SUSPEND', $subject, $body));
             Mail::to('abhishek86478@gmail.com')->send(new StatusNotificationMail('SUSPEND', $subject, $body));
-
         } else if ($user->status == 3) {
             $subject = "Important Notice: Your Account Has Been Permanently Blocked";
             $body = "We regret to inform you that your account has been permanently blocked due to unusual activities detected on our platform. This decision has been made to ensure the safety and integrity of our users and services. ";
             Mail::to($user->email)->send(new StatusNotificationMail('BLOCKED', $subject, $body));
             Mail::to('abhishek86478@gmail.com')->send(new StatusNotificationMail('BLOCKED', $subject, $body));
-
         }
 
         session()->flash('success', __('User updated successfully.'));

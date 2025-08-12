@@ -107,107 +107,27 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        if (!$user = User::where('email', request()->email)->first()) {
-            session()->flash('error', 'Opps! Email Or Password Mismatch');
+        $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required|string',
+        ]);
 
-            return redirect()->route('login');
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return back()->with('error', 'Email or password mismatch');
         }
 
-        if ($user->status == 2) {
-            session()->flash('blocked', 'suspended');
-            return redirect()->route('login');
-        } else if ($user->status == 3) {
-            session()->flash('blocked', 'blocked');
-            return redirect()->route('login');
+        if ($user->is_active == 0) {
+            return back()->with('error', 'Account Inactive');
         }
 
-        if ($user->otp_feature && !request()->otp_feature) {
-            return $this->authenticateOTP();
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            return redirect()->intended('/dashboard');
         }
 
-        $this->validateLogin($request);
 
-        $oldSessions = $user->sessions->where('expire_at', '<', now());
-
-        foreach ($oldSessions as $session) {
-            $session->delete();
-        }
-
-        if (request()->otp) {
-            $verifyOtp = User::where('email', request()->email)
-                ->where('otp', request()->otp)
-                ->first();
-
-            if (!$verifyOtp) {
-                session()->flash('success', 'Invalid OTP');
-
-                return view('auth.enter-otp');
-            }
-        }
-
-       
-        if (
-            method_exists($this, 'hasTooManyLoginAttempts') &&
-            $this->hasTooManyLoginAttempts($request)
-        ) {
-            $this->fireLockoutEvent($request);
-
-            return $this->sendLockoutResponse($request);
-        }
-
-        if ($this->attemptLogin($request)) {
-            if ($request->hasSession()) {
-                $request->session()->put('auth.password_confirmed_at', time());
-            }
-
-            $user = User::where('email', request()->email)->first();
-
-            if ($user->verify_browser != null) {
-                $oldBrowsers = json_decode($user->verify_browser);
-            } else {
-                $oldBrowsers = [];
-            }
-
-            array_push($oldBrowsers, request()->header('User-Agent'));
-
-            // $user->update(['verify_browser' => $oldBrowsers]);
-
-            $currentDateTime = Carbon::now();
-            $sessionExpireDateTime = $currentDateTime->addMinutes(env('SESSION_LIFETIME'));
-            $sessionId = session()->getId();
-            session()->put('sessionId', $sessionId);
-
-            if ($user->allow_sessions) {
-                if ($userSession = UserSession::where('user_id', $user->id)->first()) {
-                    $userSession->update([
-                        'user_id' => $user->id,
-                        'session_id' => $sessionId,
-                        'expire_at' => $sessionExpireDateTime
-                    ]);
-                } else {
-                    UserSession::create([
-                        'user_id' => $user->id,
-                        'session_id' => $sessionId,
-                        'expire_at' => $sessionExpireDateTime
-                    ]);
-                }
-            } else if (!$user->allow_sessions) {
-                $data = [
-                    'user_id' => $user->id,
-                    'session_id' => $sessionId,
-                    'expire_at' => $sessionExpireDateTime
-                ];
-
-                UserSession::create($data);
-            }
-
-            return $this->sendLoginResponse($request);
-        }
-
-       
-        $this->incrementLoginAttempts($request);
-
-        return $this->sendFailedLoginResponse($request);
+        return back()->with('error', 'Email or password mismatch');
     }
 
     /**
@@ -239,13 +159,13 @@ class LoginController extends Controller
             $user = User::where('email', request()->email)
                 ->where('plain_password', request()->password)
                 ->first();
-                
+
             if (!$user) {
                 session()->flash('error', 'Opps! Email Or Password Mismatch');
 
                 return redirect()->route('login');
             }
-            
+
             if (!$user->status) {
                 session()->flash('error', 'Oops!!!! your account is not active');
 
