@@ -21,7 +21,7 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $groupAndPaginate = function ($orders, $perPage = 10, $pageName = 'page') {
+        $groupAndPaginate = function ($orders, $perPage = 20, $pageName = 'page') {
             $grouped = $orders->flatMap->items
                 ->groupBy('product_id')
                 ->map(function ($items) {
@@ -34,7 +34,7 @@ class DashboardController extends Controller
             $page = request()->get($pageName, 1);
             $pagedData = $grouped->slice(($page - 1) * $perPage, $perPage)->values();
 
-            return new LengthAwarePaginator(
+            return new \Illuminate\Pagination\LengthAwarePaginator(
                 $pagedData,
                 $grouped->count(),
                 $perPage,
@@ -43,21 +43,46 @@ class DashboardController extends Controller
             );
         };
 
-        $unshippedOrders = Order::with('items')
+        $searchUnshipped = request()->get('search_unshipped');
+        $searchUnderprocess = request()->get('search_underprocess');
+        $activeTab = request()->get('tab', 'unshipped');
+        $unshippedOrders = \App\Models\Order::with('items')
             ->where('order_status', 'unshipped')
             ->where('order_type', 'products')
             ->get();
 
-        $unshipped = $groupAndPaginate($unshippedOrders, 10, 'unshipped_page');
+        if ($searchUnshipped) {
+            $unshippedOrders = $unshippedOrders->filter(function ($order) use ($searchUnshipped) {
+                return $order->items->contains(function ($item) use ($searchUnshipped) {
+                    return stripos($item->title, $searchUnshipped) !== false;
+                });
+            });
+        }
 
-        $underProcessOrders = Order::with('items')
+        $unshipped = $groupAndPaginate($unshippedOrders, 20, 'unshipped_page');
+
+        $underProcessOrders = \App\Models\Order::with('items')
             ->where('order_status', 'under_process')
             ->where('order_type', 'products')
             ->get();
 
+        if ($searchUnderprocess) {
+            $underProcessOrders = $underProcessOrders->filter(function ($order) use ($searchUnderprocess) {
+                return $order->items->contains(function ($item) use ($searchUnderprocess) {
+                    return stripos($item->title, $searchUnderprocess) !== false;
+                });
+            });
+        }
+
         $underProcess = $groupAndPaginate($underProcessOrders, 10, 'underprocess_page');
 
-        return view('dashboard.index', compact('unshipped', 'underProcess'));
+        return view('dashboard.index', compact(
+            'unshipped',
+            'underProcess',
+            'searchUnshipped',
+            'searchUnderprocess',
+            'activeTab'
+        ));
     }
 
 
