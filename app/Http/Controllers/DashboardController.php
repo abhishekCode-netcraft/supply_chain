@@ -118,12 +118,26 @@ class DashboardController extends Controller
         $tab = $request->get('tab', 'unshipped');
         $perPage = 15;
 
+        $user = Auth::user();
+        $cutoffTimestamp = null;
+
+        if (!empty($user->order_date)) {
+            $cutoffTimestamp = Carbon::now()
+                ->subDays($user->order_date)
+                ->startOfDay();
+        }
+
         if ($tab === 'unshipped') {
             $page = $request->get('unshipped_page', 1);
-            $orders = Order::with('items')
+            $ordersQuery = Order::with('items')
                 ->where('order_status', 'unshipped')
-                ->where('order_type', 'products')
-                ->get();
+                ->where('order_type', 'products');
+
+            if ($cutoffTimestamp) {
+                $ordersQuery->where('created_at', '<', $cutoffTimestamp);
+            }
+
+            $orders = $ordersQuery->get();
 
             if ($request->filled('search_unshipped')) {
                 $search = $request->get('search_unshipped');
@@ -135,10 +149,16 @@ class DashboardController extends Controller
             }
         } else {
             $page = $request->get('underprocess_page', 1);
-            $orders = Order::with('items')
+            $ordersQuery = Order::with('items')
                 ->where('order_status', 'under_process')
-                ->where('order_type', 'products')
-                ->get();
+                ->where('order_type', 'products');
+
+            // cutoffTimestamp apply karo
+            if ($cutoffTimestamp) {
+                $ordersQuery->where('created_at', '<', $cutoffTimestamp);
+            }
+
+            $orders = $ordersQuery->get();
 
             if ($request->filled('search_underprocess')) {
                 $search = $request->get('search_underprocess');
@@ -170,6 +190,7 @@ class DashboardController extends Controller
 
         return $pdf->download("{$tab}_items_page_{$page}.pdf");
     }
+
     /**
      * Get Statistics
      *

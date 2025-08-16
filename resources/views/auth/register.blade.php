@@ -3,10 +3,26 @@
 @section('title', 'Register')
 
 @section('content')
-<form method="POST" action="{{ route('register.store') }}" enctype="multipart/form-data">
+
+<style>
+    .form-control {
+        padding: 12px 16px;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+
+    textarea.form-control {
+        padding: 14px 16px;
+    }
+    .form-label {
+        font-weight: 600;
+    }
+</style>
+
+<form method="POST" action="{{ route('register.store') }}" enctype="multipart/form-data" class="p-4 shadow rounded bg-white">
     @csrf
 
-    <h2 class="text-center mb-5 fw-bold">Register</h2>
+    <h2 class="text-center mb-5 fw-bold text-primary">Register</h2>
 
     <div class="row">
         {{-- PERSONAL INFORMATION --}}
@@ -109,7 +125,7 @@
 
     <div class="d-flex justify-content-between align-items-center mt-4">
         <a href="{{ route('login') }}" class="text-primary">Back to Login</a>
-        <button type="submit" class="btn btn-primary px-4">Register</button>
+        <button type="submit" class="btn btn-primary px-4 py-2">Register</button>
     </div>
 </form>
 @endsection

@@ -27,7 +27,7 @@ Route::get('/verify-email/{code}', [UserController::class, 'verifyEmail'])->name
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web']], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/export-pdf', [DashboardController::class, 'exportPdf'])->name('dashboard.exportPdf');
-  
+
 
     // Profile Routes
     Route::group(['prefix' => 'profile'], function () {
@@ -37,7 +37,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web']], function ()
         Route::post('delete', [ProfileController::class, 'delete'])->name('profile.listing.delete');
         Route::get('delete/{id}', [ProfileController::class, 'singleDelete'])->name('profile.listing.delete.single');
     });
-Route::post('users/{user}/status', [UserController::class, 'updateStatus'])->name('users.updateStatus');
+    Route::post('users/{user}/status', [UserController::class, 'updateStatus'])->name('users.updateStatus');
 
     Route::resource('users', UserController::class);
 });
