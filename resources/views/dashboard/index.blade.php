@@ -44,6 +44,7 @@
 
 <div class="main-container container-fluid">
 
+    {{-- Tabs --}}
     <ul class="nav nav-tabs row g-0" id="orderTabs" role="tablist" style="margin-bottom:20px;">
         <li class="nav-item col-6 text-center">
             <button class="nav-link w-100 py-3 fs-5 fw-bold {{ $activeTab == 'unshipped' ? 'active' : '' }}"
@@ -61,14 +62,36 @@
 
     <div class="tab-content" id="orderTabsContent">
 
+        {{-- Unshipped --}}
         <div class="tab-pane fade {{ $activeTab == 'unshipped' ? 'show active' : '' }}" id="unshipped" role="tabpanel">
-            {{-- Search Form --}}
-            <form method="GET" class="mb-3 d-flex">
-                <input type="hidden" name="tab" value="unshipped">
-                <input type="text" name="search_unshipped" class="form-control me-2 p-4" placeholder="Search Unshipped..."
-                    value="{{ $searchUnshipped }}">
-                <button class="btn btn-primary" type="submit">Search</button>
-            </form>
+
+            <div class="row mb-3 align-items-center">
+                <div class="col-6"></div>
+                <div class="col-12 mb-3">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+
+                        <form method="GET" class="d-flex flex-grow-1" style="max-width: 500px;">
+                            <input type="hidden" name="tab" value="unshipped">
+                            <input type="text"
+                                name="search_unshipped"
+                                class="form-control form-control-lg me-2"
+                                placeholder="Search Unshipped..."
+                                value="{{ $searchUnshipped }}">
+                            <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                        </form>
+
+                        <form method="GET" action="{{ route('dashboard.exportPdf') }}">
+                            <input type="hidden" name="tab" value="unshipped">
+                            <input type="hidden" name="search_unshipped" value="{{ $searchUnshipped }}">
+                            <input type="hidden" name="unshipped_page" value="{{ request('unshipped_page', 1) }}">
+                            <button class="btn btn-danger btn-lg" type="submit">Export to PDF</button>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
 
             <div class="card-grid">
                 @forelse($unshipped as $item)
@@ -95,14 +118,37 @@
             </div>
         </div>
 
+        {{-- Under Process --}}
         <div class="tab-pane fade {{ $activeTab == 'underprocess' ? 'show active' : '' }}" id="underprocess" role="tabpanel">
-            {{-- Search Form --}}
-            <form method="GET" class="mb-3 d-flex">
-                <input type="hidden" name="tab" value="underprocess">
-                <input type="text" name="search_underprocess" class="form-control me-2 p-4" placeholder="Search Under Process..."
-                    value="{{ $searchUnderprocess }}">
-                <button class="btn btn-primary" type="submit">Search</button>
-            </form>
+
+            <div class="row mb-3 align-items-center">
+                <div class="col-6"></div>
+                <div class="col-12 mb-3">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+
+                        <form method="GET" class="d-flex flex-grow-1" style="max-width: 500px;">
+                            <input type="hidden" name="tab" value="underprocess">
+                            <input type="text"
+                                name="search_underprocess"
+                                class="form-control form-control-lg me-2"
+                                placeholder="Search Under Process..."
+                                value="{{ $searchUnderprocess }}">
+                            <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                        </form>
+
+
+                        <form method="GET" action="{{ route('dashboard.exportPdf') }}">
+                            <input type="hidden" name="tab" value="underprocess">
+                            <input type="hidden" name="search_underprocess" value="{{ $searchUnderprocess }}">
+                            <input type="hidden" name="underprocess_page" value="{{ request()->get('underprocess_page', 1) }}">
+                            <button class="btn btn-danger btn-lg" type="submit">Export to PDF</button>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
 
             <div class="card-grid">
                 @forelse($underProcess as $item)

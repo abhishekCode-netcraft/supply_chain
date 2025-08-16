@@ -24,6 +24,9 @@
                 <li class="slide">
                     <a class="side-menu__item" data-bs-toggle="slide" href="{{ route('dashboard') }}"><i class="side-menu__icon fe fe-home"></i><span class="side-menu__label">{{ __('Dashboard') }}</span></a>
                 </li>
+                    <li class="slide">
+                    <a class="side-menu__item" data-bs-toggle="slide" href="{{ route('users.index') }}"><i class="side-menu__icon fe fe-home"></i><span class="side-menu__label">{{ __('Manage Users') }}</span></a>
+                </li>
             </ul>
         </div>
     </div>

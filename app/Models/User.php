@@ -33,7 +33,10 @@ class User extends Authenticatable
         'business_upload',
         'status',
         'is_active',
-        'password'
+        'password',
+        "email_verification_code",
+        "email_verified_at",
+        "order_date"
     ];
 
 
