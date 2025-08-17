@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,7 +34,7 @@ class DashboardController extends Controller
         $todayTimestamp = Carbon::now()->timestamp * 1000;
 
 
-        $groupAndPaginate = function ($orders, $perPage = 15, $pageName = 'page') {
+        $groupAndPaginate = function ($orders, $perPage = 50, $pageName = 'page') {
             $grouped = $orders->flatMap->items
                 ->groupBy('product_id')
                 ->map(function ($items) {
@@ -80,7 +77,7 @@ class DashboardController extends Controller
             });
         }
 
-        $unshipped = $groupAndPaginate($unshippedOrders, 15, 'unshipped_page');
+        $unshipped = $groupAndPaginate($unshippedOrders, 50, 'unshipped_page');
 
 
         $underProcessQuery = \App\Models\Order::with('items')
@@ -101,7 +98,7 @@ class DashboardController extends Controller
             });
         }
 
-        $underProcess = $groupAndPaginate($underProcessOrders, 15, 'underprocess_page');
+        $underProcess = $groupAndPaginate($underProcessOrders, 50, 'underprocess_page');
 
         return view('dashboard.index', compact(
             'unshipped',
@@ -116,7 +113,8 @@ class DashboardController extends Controller
     public function exportPdf(Request $request)
     {
         $tab = $request->get('tab', 'unshipped');
-        $perPage = 15;
+        $exportType = $request->get('export_type', 'with_image'); 
+        $perPage = 50;
 
         $user = Auth::user();
         $cutoffTimestamp = null;
@@ -153,7 +151,6 @@ class DashboardController extends Controller
                 ->where('order_status', 'under_process')
                 ->where('order_type', 'products');
 
-            // cutoffTimestamp apply karo
             if ($cutoffTimestamp) {
                 $ordersQuery->where('created_at', '<', $cutoffTimestamp);
             }
@@ -170,7 +167,7 @@ class DashboardController extends Controller
             }
         }
 
-        // Group and slice data
+  
         $grouped = $orders->flatMap->items
             ->groupBy('product_id')
             ->map(function ($items) {
@@ -182,49 +179,16 @@ class DashboardController extends Controller
 
         $pagedData = $grouped->slice(($page - 1) * $perPage, $perPage)->values();
 
-        $pdf = PDF::loadView('dashboard.export-pdf', [
+        $view = $exportType === 'without_image'
+            ? 'dashboard.export-pdf-table' 
+            : 'dashboard.export-pdf';    
+
+        $pdf = PDF::loadView($view, [
             'items' => $pagedData,
             'tab'   => $tab
         ])->setPaper('a4', 'portrait')
             ->setOptions(['isRemoteEnabled' => true]);
 
         return $pdf->download("{$tab}_items_page_{$page}.pdf");
-    }
-
-    /**
-     * Get Statistics
-     *
-     * @param string $category
-     * @return int
-     */
-    public function getStats()
-    {
-        $url = $this->getSiteBaseUrl();
-
-        $category = request()->category;
-
-        $agoDate = Carbon::now();
-
-        if (request()->filled('updated_before')) {
-            // Get the current date
-            $currentDate = Carbon::now();
-
-            if (
-                request()->query('updated_before') == 1
-                || request()->query('updated_before') == 2
-                || request()->query('updated_before') == "3Y"
-            ) {
-                $updateBefore = request()->query('updated_before');
-                if (request()->query('updated_before') == "3Y") $updateBefore = 3;
-                $agoDate = $currentDate->subYear($updateBefore);
-            } else {
-                // Subtract three months from the current date
-                $agoDate = $currentDate->subMonths(request()->query('updated_before'));
-            }
-        }
-
-        $response = Http::get($url . '/feeds/posts/default?alt=json&category=' . $category . "&updated-max=" . $agoDate?->format('Y-m-d') . "T00:00:00");
-
-        return $response->json()['feed']['openSearch$totalResults']['$t'];
     }
 }

@@ -29,37 +29,50 @@
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 6px;
-            overflow: hidden;
             text-align: center;
+            padding: 8px;
+            position: relative;
+         
+        }
+
+     
+        .img-holder {
+            width: 100%;
+            height: 220px;
+          
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+       
         }
 
         .card-img {
-            width: 100%;
-            max-height: 250px;
+            max-width: 100%;
+            max-height: 100%;
             object-fit: contain;
             display: block;
         }
 
+     
         .badge {
-            position: relative;
-            top: -35px;
-            left: calc(100% - 40px);
-            background-color: red;
-            color: white;
-            padding: 5px 8px;
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background-color: #d33;
+            color: #fff;
+            padding: 5px 10px;
             font-size: 10pt;
             font-weight: bold;
-            border-radius: 50%;
+            border-radius: 12px;
             line-height: 1;
-            display: inline-block;
         }
 
         .card-title {
             font-size: 11pt;
-            padding: 8px;
+            padding: 8px 4px 2px;
             word-wrap: break-word;
             white-space: normal;
-            margin-top: -20px; /* badge ke niche space adjust */
         }
     </style>
 </head>
@@ -69,16 +82,25 @@
         <tr>
             @php $col = 0; @endphp
             @foreach($items as $item)
-                <td>
-                    <img class="card-img" src="{{ str_replace('/w80/', '/s800/', $item->thumb) }}" alt="Image">
-                    <div class="badge">{{ $item->order_count }}</div>
-                    <div class="card-title">{{ $item->title }}</div>
-                </td>
-                @php $col++; @endphp
+            <td>
+                <div class="img-holder">
+                    @php
+                    $src = $item->thumb ?: $item->clean_thumb;
+                    if ($src) {
+                    $src = str_replace('/w80/', '/s800/', $src);
+                    }
+                    @endphp
+                    <img class="card-img" src="{{ $src }}" alt="Image">
+                </div>
+                <div class="badge">{{ $item->order_count }}</div>
+                <div class="card-title">{{ $item->title }}</div>
+            </td>
 
-                @if($col % 3 == 0)
-                    </tr><tr>
-                @endif
+            @php $col++; @endphp
+            @if($col % 3 == 0)
+        </tr>
+        <tr>
+            @endif
             @endforeach
         </tr>
     </table>

@@ -31,9 +31,9 @@
                             {{ __('Profile update') }}
                         </h4>
 
-                        @if(!auth()->user()->account_details_change_limitations)
+                        <!-- @if(!auth()->user()->account_details_change_limitations)
                         <button type="submit" class="btn btn-primary float-right">Save</button>
-                        @endif
+                        @endif -->
                     </div>
 
                     <div class="card-body">

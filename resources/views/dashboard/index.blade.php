@@ -6,27 +6,36 @@
 <style>
     .card-grid {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 1.5rem;
     }
 
-    @media (max-width: 992px) {
-        .card-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    @media (max-width: 768px) {
+    @media only screen and (min-width: 600px) {
         .card-grid {
             grid-template-columns: repeat(2, 1fr);
         }
     }
 
-    @media (max-width: 576px) {
+    @media only screen and (min-width: 768px) {
         .card-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(3, 1fr);
         }
     }
+
+    @media only screen and (min-width: 992px) {
+        .card-grid {
+            grid-template-columns: repeat(4, 1fr);
+
+        }
+    }
+
+
+    @media only screen and (min-width: 1200px) {
+        .card-grid {
+            grid-template-columns: repeat(5, 1fr);
+        }
+    }
+
 
     .card-title {
         font-size: 0.95rem;
@@ -81,12 +90,21 @@
                             <button class="btn btn-primary btn-lg" type="submit">Search</button>
                         </form>
 
-                        <form method="GET" action="{{ route('dashboard.exportPdf') }}">
+                        <form method="GET" action="{{ route('dashboard.exportPdf') }}" class="d-flex align-items-center">
                             <input type="hidden" name="tab" value="unshipped">
                             <input type="hidden" name="search_unshipped" value="{{ $searchUnshipped }}">
                             <input type="hidden" name="unshipped_page" value="{{ request('unshipped_page', 1) }}">
-                            <button class="btn btn-danger btn-lg" type="submit">Export to PDF</button>
+
+                            <select name="export_type" class="form-select me-2">
+                                <option value="with_image">With Images</option>
+                                <option value="without_image">Without Images</option>
+                            </select>
+
+                            <button class="btn btn-danger btn-lg px-4" type="submit" style="min-width: 180px;">
+                                Export to PDF
+                            </button>
                         </form>
+
 
                     </div>
                 </div>
@@ -138,11 +156,19 @@
                         </form>
 
 
-                        <form method="GET" action="{{ route('dashboard.exportPdf') }}">
+                        <form method="GET" action="{{ route('dashboard.exportPdf') }}" class="d-flex align-items-center">
                             <input type="hidden" name="tab" value="underprocess">
                             <input type="hidden" name="search_underprocess" value="{{ $searchUnderprocess }}">
                             <input type="hidden" name="underprocess_page" value="{{ request()->get('underprocess_page', 1) }}">
-                            <button class="btn btn-danger btn-lg" type="submit">Export to PDF</button>
+
+                            <select name="export_type" class="form-select me-2" style="min-width: 160px;">
+                                <option value="with_image">With Images</option>
+                                <option value="without_image">Without Images</option>
+                            </select>
+
+                            <button class="btn btn-danger btn-lg px-4" type="submit" style="min-width: 180px;">
+                                Export to PDF
+                            </button>
                         </form>
 
                     </div>
