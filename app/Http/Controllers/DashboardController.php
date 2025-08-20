@@ -23,16 +23,23 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cutoffTimestamp = null;
 
+
+        $unshippedCutoff = null;
         if (!empty($user->order_date)) {
-            $cutoffTimestamp = Carbon::now()
+            $unshippedCutoff = Carbon::now()
                 ->subDays($user->order_date)
                 ->startOfDay()
                 ->timestamp * 1000;
         }
-        $todayTimestamp = Carbon::now()->timestamp * 1000;
 
+        $underProcessCutoff = null;
+        if (!empty($user->underProcess_order_date)) {
+            $underProcessCutoff = Carbon::now()
+                ->subDays($user->underProcess_order_date)
+                ->startOfDay()
+                ->timestamp * 1000;
+        }
 
         $groupAndPaginate = function ($orders, $perPage = 50, $pageName = 'page') {
             $grouped = $orders->flatMap->items
@@ -64,8 +71,8 @@ class DashboardController extends Controller
             ->where('order_status', 'unshipped')
             ->where('order_type', 'products');
 
-        if ($cutoffTimestamp) {
-            $unshippedQuery->where('created_at', '<', $cutoffTimestamp);
+        if ($unshippedCutoff) {
+            $unshippedQuery->where('created_at', '<', $unshippedCutoff);
         }
         $unshippedOrders = $unshippedQuery->get();
 
@@ -84,8 +91,8 @@ class DashboardController extends Controller
             ->where('order_status', 'under_process')
             ->where('order_type', 'products');
 
-        if ($cutoffTimestamp) {
-            $underProcessQuery->where('created_at', '<', $cutoffTimestamp);
+        if ($underProcessCutoff) {
+            $underProcessQuery->where('created_at', '<', $underProcessCutoff);
         }
 
         $underProcessOrders = $underProcessQuery->get();
@@ -113,17 +120,18 @@ class DashboardController extends Controller
     public function exportPdf(Request $request)
     {
         $tab = $request->get('tab', 'unshipped');
-        $exportType = $request->get('export_type', 'with_image'); 
+        $exportType = $request->get('export_type', 'with_image');
         $perPage = 50;
 
         $user = Auth::user();
-        $cutoffTimestamp = null;
 
-        if (!empty($user->order_date)) {
-            $cutoffTimestamp = Carbon::now()
-                ->subDays($user->order_date)
-                ->startOfDay();
-        }
+        $unshippedCutoff = !empty($user->order_date)
+            ? Carbon::now()->subDays($user->order_date)->startOfDay()
+            : null;
+
+        $underProcessCutoff = !empty($user->underProcess_order_date)
+            ? Carbon::now()->subDays($user->underProcess_order_date)->startOfDay()
+            : null;
 
         if ($tab === 'unshipped') {
             $page = $request->get('unshipped_page', 1);
@@ -131,8 +139,8 @@ class DashboardController extends Controller
                 ->where('order_status', 'unshipped')
                 ->where('order_type', 'products');
 
-            if ($cutoffTimestamp) {
-                $ordersQuery->where('created_at', '<', $cutoffTimestamp);
+            if ($unshippedCutoff) {
+                $ordersQuery->where('created_at', '<', $unshippedCutoff);
             }
 
             $orders = $ordersQuery->get();
@@ -151,8 +159,8 @@ class DashboardController extends Controller
                 ->where('order_status', 'under_process')
                 ->where('order_type', 'products');
 
-            if ($cutoffTimestamp) {
-                $ordersQuery->where('created_at', '<', $cutoffTimestamp);
+            if ($underProcessCutoff) {
+                $ordersQuery->where('created_at', '<', $underProcessCutoff);
             }
 
             $orders = $ordersQuery->get();
@@ -167,7 +175,7 @@ class DashboardController extends Controller
             }
         }
 
-  
+
         $grouped = $orders->flatMap->items
             ->groupBy('product_id')
             ->map(function ($items) {
@@ -180,8 +188,8 @@ class DashboardController extends Controller
         $pagedData = $grouped->slice(($page - 1) * $perPage, $perPage)->values();
 
         $view = $exportType === 'without_image'
-            ? 'dashboard.export-pdf-table' 
-            : 'dashboard.export-pdf';    
+            ? 'dashboard.export-pdf-table'
+            : 'dashboard.export-pdf';
 
         $pdf = PDF::loadView($view, [
             'items' => $pagedData,

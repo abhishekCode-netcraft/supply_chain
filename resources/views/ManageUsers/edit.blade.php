@@ -87,15 +87,27 @@
         </div>
       </div>
 
-      {{-- Extra field --}}
-      <div class="mb-2 mt-3">
-        <label class="form-label">Order Date (Numeric)</label>
-        <input type="number"
-          name="order_date"
-          value="{{ old('order_date', $user->order_date) }}"
-          class="form-control"
-          placeholder="Enter order date in numbers">
+      {{-- Extra fields in one row --}}
+      <div class="row mb-2 mt-3">
+        <div class="col-md-6">
+          <label class="form-label">Unshipped Order Date (Numeric)</label>
+          <input type="number"
+            name="order_date"
+            value="{{ old('order_date', $user->order_date) }}"
+            class="form-control"
+            placeholder="Enter Unshipped order date in numbers">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Under Process Order Date (Numeric)</label>
+          <input type="number"
+            name="underProcess_order_date"
+            value="{{ old('underProcess_order_date', $user->underProcess_order_date) }}"
+            class="form-control"
+            placeholder="Enter Under Process order date in numbers">
+        </div>
       </div>
+
 
       {{-- Security --}}
       <div class="mt-3">

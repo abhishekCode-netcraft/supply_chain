@@ -143,8 +143,8 @@ class UserController extends Controller
             'name' => $request->name,
             'email_verification_code' => $verificationCode,
         ]));
-      return redirect()->route('login')
-        ->with('success', 'Registration initiated! Please check your email to verify.');
+        return redirect()->route('login')
+            ->with('success', 'Registration initiated! Please check your email to verify.');
     }
 
 
@@ -166,37 +166,37 @@ class UserController extends Controller
     // }
 
     public function verifyEmail($code)
-{
-    $data = session()->get('register_data');
+    {
+        $data = session()->get('register_data');
 
-    if (!$data || $data['verification_code'] !== $code) {
-        return redirect()->route('login')->with('error', 'Invalid or expired verification link.');
+        if (!$data || $data['verification_code'] !== $code) {
+            return redirect()->route('login')->with('error', 'Invalid or expired verification link.');
+        }
+
+        // ab yahi user create hoga
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'mobile' => $data['mobile'],
+            'whatsapp_no' => $data['whatsapp_no'],
+            'password' => $data['password'],
+            'alternate_no' => $data['alternate_no'],
+            'business_name' => $data['business_name'],
+            'business_address' => $data['business_address'],
+            'business_email' => $data['business_email'],
+            'business_phone' => $data['business_phone'],
+            'personal_upload' => $data['personal_upload'],
+            'business_upload' => $data['business_upload'],
+            'email_verified_at' => now(),
+            'is_active' => false,
+            'email_verification_code' => null
+        ]);
+
+        // ek hi bar use karne ke liye session clear
+        session()->forget('register_data');
+
+        return redirect()->route('login')->with('success', 'Your email has been verified! Please wait for admin approval.');
     }
-
-    // ab yahi user create hoga
-    $user = User::create([
-        'name' => $data['name'],
-        'email' => $data['email'],
-        'mobile' => $data['mobile'],
-        'whatsapp_no' => $data['whatsapp_no'],
-        'password' => $data['password'],
-        'alternate_no' => $data['alternate_no'],
-        'business_name' => $data['business_name'],
-        'business_address' => $data['business_address'],
-        'business_email' => $data['business_email'],
-        'business_phone' => $data['business_phone'],
-        'personal_upload' => $data['personal_upload'],
-        'business_upload' => $data['business_upload'],
-        'email_verified_at' => now(),
-        'is_active' => false,
-        'email_verification_code' => null
-    ]);
-
-    // ek hi bar use karne ke liye session clear
-    session()->forget('register_data');
-
-    return redirect()->route('login')->with('success', 'Your email has been verified! Please wait for admin approval.');
-}
 
 
 
@@ -325,6 +325,8 @@ class UserController extends Controller
             'personal_upload'  => 'nullable|file',
             'business_upload'  => 'nullable|file',
             'order_date'       => 'nullable|numeric',
+            'underProcess_order_date'       => 'nullable|numeric',
+
 
         ]);
 
@@ -357,6 +359,7 @@ class UserController extends Controller
         $user->business_email   = $request->business_email;
         $user->business_phone   = $request->business_phone;
         $user->order_date = $request->order_date;
+         $user->underProcess_order_date = $request->underProcess_order_date;
 
         $user->save();
         return redirect()->route('users.index')->with('success', 'User updated successfully.');

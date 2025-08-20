@@ -36,7 +36,8 @@ class User extends Authenticatable
         'password',
         "email_verification_code",
         "email_verified_at",
-        "order_date"
+        "order_date",
+        "underProcess_order_date"
     ];
 
 
