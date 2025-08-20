@@ -44,7 +44,7 @@ class UserController extends Controller
 
         $users = $q->paginate(10)->withQueryString();
 
-        return view('ManageUsers.index', compact('users'));
+        return view('user.index', compact('users'));
     }
 
     public function generateOTP($n)
@@ -105,23 +105,6 @@ class UserController extends Controller
         }
         $verificationCode = Str::random(40); // unique code
 
-        // $user = User::create([
-        //     'name' => $request->name,
-        //     'email' => $request->email,
-        //     'mobile' => $request->mobile,
-        //     'whatsapp_no' => $request->whatsapp,
-        //     'password' => Hash::make($request->password),
-        //     'alternate_no' => $request->alternate_no,
-        //     'business_name' => $request->business_name,
-        //     'business_address' => $request->business_address,
-        //     'business_email' => $request->business_email,
-        //     'business_phone' => $request->business_phone,
-        //     'personal_upload' => $personalFilePath,
-        //     'business_upload' => $businessFilePath,
-        //     'is_active' => false,
-        //     'email_verification_code' => $verificationCode
-        // ]);
-
         session()->put('register_data', [
             'name' => $request->name,
             'email' => $request->email,
@@ -147,59 +130,38 @@ class UserController extends Controller
         ->with('success', 'Registration initiated! Please check your email to verify.');
     }
 
-
-    // public function verifyEmail($code)
-    // {
-
-    //     $user = User::where('email_verification_code', $code)->first();
-
-    //     if (!$user) {
-    //         return redirect()->route('login')->with('error', 'Invalid or expired verification link.');
-    //     }
-
-    //     $user->update([
-    //         'email_verified_at' => now(),
-    //         'email_verification_code' => null
-    //     ]);
-
-    //     return redirect()->route('login')->with('success', 'Your email has been verified! Please wait for admin approval.');
-    // }
-
     public function verifyEmail($code)
-{
-    $data = session()->get('register_data');
+    {
+        $data = session()->get('register_data');
 
-    if (!$data || $data['verification_code'] !== $code) {
-        return redirect()->route('login')->with('error', 'Invalid or expired verification link.');
+        if (!$data || $data['verification_code'] !== $code) {
+            return redirect()->route('login')->with('error', 'Invalid or expired verification link.');
+        }
+
+        // ab yahi user create hoga
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'mobile' => $data['mobile'],
+            'whatsapp_no' => $data['whatsapp_no'],
+            'password' => $data['password'],
+            'alternate_no' => $data['alternate_no'],
+            'business_name' => $data['business_name'],
+            'business_address' => $data['business_address'],
+            'business_email' => $data['business_email'],
+            'business_phone' => $data['business_phone'],
+            'personal_upload' => $data['personal_upload'],
+            'business_upload' => $data['business_upload'],
+            'email_verified_at' => now(),
+            'is_active' => false,
+            'email_verification_code' => null
+        ]);
+
+        // ek hi bar use karne ke liye session clear
+        session()->forget('register_data');
+
+        return redirect()->route('login')->with('success', 'Your email has been verified! Please wait for admin approval.');
     }
-
-    // ab yahi user create hoga
-    $user = User::create([
-        'name' => $data['name'],
-        'email' => $data['email'],
-        'mobile' => $data['mobile'],
-        'whatsapp_no' => $data['whatsapp_no'],
-        'password' => $data['password'],
-        'alternate_no' => $data['alternate_no'],
-        'business_name' => $data['business_name'],
-        'business_address' => $data['business_address'],
-        'business_email' => $data['business_email'],
-        'business_phone' => $data['business_phone'],
-        'personal_upload' => $data['personal_upload'],
-        'business_upload' => $data['business_upload'],
-        'email_verified_at' => now(),
-        'is_active' => false,
-        'email_verification_code' => null
-    ]);
-
-    // ek hi bar use karne ke liye session clear
-    session()->forget('register_data');
-
-    return redirect()->route('login')->with('success', 'Your email has been verified! Please wait for admin approval.');
-}
-
-
-
 
     public function store(Request $request)
     {
@@ -253,11 +215,9 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User created & verification email sent.');
     }
 
-
-
     public function create()
     {
-        return view('ManageUsers.create');
+        return view('user.create');
     }
 
     public function updateStatus(Request $request, User $user)
@@ -305,9 +265,8 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        return view('ManageUsers.edit', compact('user'));
+        return view('user.edit', compact('user'));
     }
-
 
     public function update(Request $request, User $user)
     {
