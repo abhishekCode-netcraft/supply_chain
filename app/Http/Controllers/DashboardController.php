@@ -185,7 +185,14 @@ class DashboardController extends Controller
             })
             ->values();
 
-        $pagedData = $grouped->slice(($page - 1) * $perPage, $perPage)->values();
+        if ($exportType === 'without_image') {
+
+            $pagedData = $grouped->values();
+        } else {
+
+            $pagedData = $grouped->slice(($page - 1) * $perPage, $perPage)->values();
+        }
+
 
         $view = $exportType === 'without_image'
             ? 'dashboard.export-pdf-table'
