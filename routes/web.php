@@ -55,6 +55,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web']], function ()
     Route::post('users/{user}/status', [UserController::class, 'updateStatus'])
         ->name('users.updateStatus');
 
+    Route::put('users/{user}/role', [UserController::class, 'updateRole'])
+        ->name('users.update.role');
+
     Route::resource('users', UserController::class);
 
     Route::resource('roles', RoleController::class);
@@ -79,5 +82,5 @@ Route::group(['prefix' => 'password'], function () {
 
 // Redirect root to login
 Route::get('/', function () {
-    return redirect()->route('login');
+    return view('home');
 });

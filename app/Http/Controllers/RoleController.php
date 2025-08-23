@@ -54,29 +54,9 @@ class RoleController extends Controller
                 $permissionsInCategory['User'][] = $permission;
             }
 
-            if (stripos($permission['name'], 'Listing') !== false) {
-                // Add the permission to the array for the current category
-                $permissionsInCategory['Listing'][] = $permission;
-            }
-
-            if (stripos($permission['name'], 'Settings') !== false) {
-                // Add the permission to the array for the current category
-                $permissionsInCategory['Settings'][] = $permission;
-            }
-
             if (stripos($permission['name'], 'Dashboard') !== false) {
                 // Add the permission to the array for the current category
                 $permissionsInCategory['Dashboard'][] = $permission;
-            }
-
-            if (stripos($permission['name'], 'Inventory') !== false) {
-                // Add the permission to the array for the current category
-                $permissionsInCategory['Inventory'][] = $permission;
-            }
-
-            if (stripos($permission['name'], 'Image') !== false) {
-                // Add the permission to the array for the current category
-                $permissionsInCategory['Image'][] = $permission;
             }
         }
 

@@ -33,6 +33,7 @@
             <th>Business Address</th>
             <th>Email Verified</th>
             <th>Active</th>
+            <th>Role</th>
             <th width="220">Actions</th>
           </tr>
         </thead>
@@ -60,7 +61,7 @@
               @endif
             </td>
             <td>
-              <form method="POST" action="{{ route('users.updateStatus', $u->id) }}" class="d-flex align-items-center">
+              <form method="POST" action="{{ route('users.updateStatus', $u->id) }}" class="d-flex align-items-center" style="margin-left: 10px;">
                 @csrf
                 <div class="form-check form-switch">
                   <input type="hidden" name="is_active" value="0">
@@ -71,6 +72,21 @@
                   </label>
                 </div>
               </form>
+            </td>
+            <td>
+                <form method="POST" action="{{ route('users.update.role', $u->id) }}" class="d-flex align-items-center" >
+                    @csrf
+                    @method('PUT')
+                    
+                    <select name="role_id" id='role' class="form-control" onchange="this.form.submit()">
+                        <option value="">Select Role</option>
+                        @foreach ($roles as $role)
+                            <option value="{{ $role->id }}" {{ $u->hasRole($role->name) ? 'selected' : '' }}>
+                                {{ ucfirst($role->name) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
             </td>
             <td>
               <div class="d-flex flex-wrap gap-2">
@@ -105,3 +121,13 @@
 </div>
 
 @endsection
+
+@push('scripts')
+  <script>
+    $(document).ready(function() {
+        $("#role").change(function() {
+            $(this).closest("form").submit();
+        });
+    });
+  </script>
+@endpush

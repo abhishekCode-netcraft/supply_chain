@@ -63,6 +63,17 @@ return [
             ]) : [],
         ],
 
+        'supply_chain' => [ // Your second server (supply chain DB)
+            'driver' => 'mysql',
+            'host' => env('SUPPLY_DB_HOST', 'second-server-ip'),
+            'port' => env('SUPPLY_DB_PORT', '3306'),
+            'database' => env('SUPPLY_DB_DATABASE', 'supply_chain'),
+            'username' => env('SUPPLY_DB_USERNAME', 'root'),
+            'password' => env('SUPPLY_DB_PASSWORD', ''),
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),

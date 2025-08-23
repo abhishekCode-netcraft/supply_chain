@@ -3,10 +3,10 @@
     <div class="app-sidebar" style="overflow: scroll;">
         <div class="side-header">
             <a class="header-brand1" href="/admin/dashboard">
-                <img src="/storage/{{ $userInfo->logo??'logo-3.png' }}" class="header-brand-img desktop-logo" alt="logo">
-                <img src="/storage/{{ $userInfo->logo??'logo-3.png' }}" class="header-brand-img toggle-logo" alt="logo">
-                <img src="/storage/{{ $userInfo->logo??'logo-3.png' }}" class="header-brand-img light-logo" alt="logo">
-                <img src="/storage/{{ $userInfo->logo??'logo-3.png' }}" class="header-brand-img light-logo1" alt="logo" width="50" height="50">
+                <img src="/{{ $userInfo->logo??'logo.png' }}" class="header-brand-img desktop-logo" alt="logo">
+                <img src="/{{ $userInfo->logo??'logo.png' }}" class="header-brand-img toggle-logo" alt="logo">
+                <img src="/{{ $userInfo->logo??'logo.png' }}" class="header-brand-img light-logo" alt="logo">
+                <img src="/{{ $userInfo->logo??'logo.png' }}" class="header-brand-img light-logo1" alt="logo" width="50" height="50">
             </a>
             <!-- LOGO -->
         </div>

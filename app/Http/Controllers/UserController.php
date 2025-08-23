@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserSession;
+use Spatie\Permission\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
@@ -44,7 +45,9 @@ class UserController extends Controller
 
         $users = $q->paginate(10)->withQueryString();
 
-        return view('user.index', compact('users'));
+        $roles = Role::latest()->get();
+
+        return view('user.index', compact('users', 'roles'));
     }
 
     public function generateOTP($n)
@@ -160,11 +163,8 @@ class UserController extends Controller
         // ek hi bar use karne ke liye session clear
         session()->forget('register_data');
 
-    return redirect()->route('login')->with('success', 'Your email has been verified! Please wait for admin approval.');
-}
-
-
-
+        return redirect()->route('login')->with('success', 'Your email has been verified! Please wait for admin approval.');
+    }
 
     public function store(Request $request)
     {
@@ -369,5 +369,21 @@ class UserController extends Controller
         session()->flash('success', 'Session Deleted Succesfully');
 
         return redirect()->back();
+    }
+
+    public function updateRole(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($request->role_id) {
+            $role = Role::find($request->role_id);
+
+            if ($role) {
+                // remove old roles & assign new one
+                $user->syncRoles([$role->name]);
+            }
+        }
+
+        return back()->with('success', 'Role updated successfully!');
     }
 }

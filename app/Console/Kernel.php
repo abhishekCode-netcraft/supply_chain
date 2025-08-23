@@ -12,10 +12,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('backup:listing')->dailyAt("23:00");
-        $schedule->command('queue:work --tries=3')->everyFiveMinutes();
-        $schedule->command('send:report')->weeklyOn(1, '00:00');
-        $schedule->command('app:account-deactivation-mail')->dailyAt('09:00');
+        $schedule->command('orders:sync')->everySixHours($minutes = 0);
     }
 
     /**
