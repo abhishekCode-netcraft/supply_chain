@@ -22,14 +22,14 @@ class ProfileRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name'         => 'required|string|max:255',
-            'mobile'       => 'required|string|max:15',
-            'aadhaar_no'   => 'required|string|max:20',
-            'father_name'  => 'required|string|max:255',
-            'mother_name'  => 'required|string|max:255',
-            'state'        => 'required|string|max:255',
-            'pincode'      => 'required|string|max:10',
-            'full_address' => 'required|string|max:255',
+            // 'name'         => 'required|string|max:255',
+            // 'mobile'       => 'required|string|max:15',
+            // 'aadhaar_no'   => 'required|string|max:20',
+            // 'father_name'  => 'required|string|max:255',
+            // 'mother_name'  => 'required|string|max:255',
+            // 'state'        => 'required|string|max:255',
+            // 'pincode'      => 'required|string|max:10',
+            // 'full_address' => 'required|string|max:255',
         ];
 
         if ($this->filled('current_password')) {

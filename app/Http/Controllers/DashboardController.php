@@ -17,13 +17,9 @@ class DashboardController extends Controller
      */
     public function __construct() {}
 
-
-
-
     public function index()
     {
         $user = Auth::user();
-
 
         $unshippedCutoff = null;
         if (!empty($user->order_date)) {
@@ -194,14 +190,14 @@ class DashboardController extends Controller
         }
 
 
-        $view = $exportType === 'without_image'
-            ? 'dashboard.export-pdf-table'
-            : 'dashboard.export-pdf';
-
         $pdf = PDF::loadView($view, [
-            'items' => $pagedData,
-            'tab'   => $tab
-        ])->setPaper('a4', 'portrait')
+                'items' => $pagedData,
+                'tab'   => $tab,
+                'generatedAt' => Carbon::now()->format('d-m-Y H:i:s'),
+                'heading' => 'Product List',
+                'user' => auth()->user()
+            ])
+            ->setPaper('a4', 'portrait')
             ->setOptions(['isRemoteEnabled' => true]);
 
         return $pdf->download("{$tab}_items_page_{$page}.pdf");

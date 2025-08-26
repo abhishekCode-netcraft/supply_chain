@@ -6,7 +6,7 @@
             <!-- sidebar-toggle-->
             <a class="logo-horizontal " href="index.html">
                 <img src="{{ asset('assets/images/brand/logo.png') }}" class="header-brand-img desktop-logo" alt="logo">
-                <img src="{{ asset('assets/images/brand/logodropdown d-flex profile-1-3.png') }}" class="header-brand-img light-logo1" alt="logo">
+                <img src="/logo.png" class="header-brand-img light-logo1 w-50" alt="logo">
             </a>
             <div class="d-flex order-lg-2 ms-auto header-right-icons">
                 <div class="dropdown d-none">
@@ -28,7 +28,6 @@
                 </button>
                 <div class="navbar navbar-collapse responsive-navbar p-0">
                     <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
-
                         <div class="dropdown d-flex profile-1">
                             <a href="javascript:void(0)" data-bs-toggle="dropdown" class="nav-link leading-none d-flex">
                                 @if(auth()->user()->profile)
@@ -58,6 +57,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

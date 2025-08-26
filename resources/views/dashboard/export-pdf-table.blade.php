@@ -22,11 +22,26 @@
     </style>
 </head>
 <body>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <div style="text-align: center;">
+            <h2 style="margin: 0; font-size: 20px;">BOOK LIST</h2>
+        </div>
+        
+        <table style="width: 100%; font-size: 12px; margin-bottom: 10px; border: 0; border-collapse: collapse;">
+            <tr style="border: none;">
+                <td style="text-align: left; border: 0; background: none;">Export By: {{ $user->name }}</td>
+                <td style="text-align: right; border: 0; background: none;">Print Date & Time: {{ now()->format('d-m-Y H:i') }}</td>
+            </tr>
+        </table>
+
+
+    </div>
+
     <table>
         <thead>
             <tr>
-                <th>Sr. No.</th>
-                <th>Title</th>
+                <th>Sl.</th>
+                <th>Book Name</th>
                 <th>Count</th>
             </tr>
         </thead>

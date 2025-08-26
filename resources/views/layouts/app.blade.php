@@ -34,10 +34,22 @@
     <link id="theme" rel="stylesheet" type="text/css" media="all" href="{{ asset('assets/colors/color1.css') }}" />
 </head>
 
-<body class="app sidebar-mini ltr">
+<style>
+    @media only screen and (max-width: 600px) {
+        .wrap-login100 {
+            width:100% !important;
+        }
+    }
+</style>
+
+<body class="app sidebar-mini ltr" style="
+    background-image: url('/supplier.jpg');
+    background-position: center;
+    background-size: cover;
+">
     <div class="page">
         <div class="container-login100" >
-            <div class="wrap-login100 p-6  w-40">
+            <div class="wrap-login100 p-6 w-40">
                 @yield('content')
             </div>
         </div>

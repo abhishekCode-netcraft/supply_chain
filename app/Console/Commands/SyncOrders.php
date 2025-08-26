@@ -29,24 +29,30 @@ class SyncOrders extends Command
      */
     public function handle()
     {
-        // Example: Get last 1 hour orders
-        $orders = ImportOrder::where('created_at', '>=', now()->subHour())->get();
-
-        foreach ($orders as $order) {
-            // Insert into supply_chain orders table
-            $supplyOrder = Order::create($order->toArray());
-
-            // Fetch related order items
-            $items = ImportOrderItem::where('order_id', $order->id)->get();
-
-            foreach ($items as $item) {
-                $supplyItem = $item->toArray();
-                $supplyItem['order_id'] = $supplyOrder->id; // match new order_id
-                OrderItem::create($supplyItem);
+        // ⚠️ Delete all old records from supply chain DB
+        OrderItem::truncate(); // first delete child records
+        Order::truncate();     // then delete parent records
+        
+        // Process orders in chunks of 100
+        ImportOrder::where('order_type', 'products')
+            ->whereIn('order_status', ['unshipped', 'under_process'])
+            ->chunk(100, function ($orders) {
+            foreach ($orders as $order) {
+                // Insert into supply_chain orders table
+                $supplyOrder = Order::create($order->toArray());
+    
+                // Fetch related order items
+                $items = ImportOrderItem::where('order_id', $order->id)->get();
+    
+                foreach ($items as $item) {
+                    $supplyItem = $item->toArray();
+                    unset($supplyItem['updated_at']); // 🚀 remove updated_at
+                    $supplyItem['order_id'] = $supplyOrder->id; // match new order_id
+                    OrderItem::create($supplyItem);
+                }
             }
-        }
-
+        });
+    
         $this->info('Orders synced successfully.');
     }
-
 }

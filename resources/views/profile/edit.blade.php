@@ -31,9 +31,7 @@
                             {{ __('Profile update') }}
                         </h4>
 
-                        <!-- @if(!auth()->user()->account_details_change_limitations)
                         <button type="submit" class="btn btn-primary float-right">Save</button>
-                        @endif -->
                     </div>
 
                     <div class="card-body">
@@ -65,29 +63,6 @@
                                 <input id="mobile" {{ auth()->user()->account_details_change_limitations ? 'disabled' : '' }} type="text" class="form-control @error('mobile') is-invalid @enderror" name="mobile" value="{{ old('mobile') ?? $user->mobile }}" autocomplete="mobile" placeholder="Mobile">
 
                                 @error('mobile')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="father_name" class="form-label">{{ __('Father\'s Name') }}<span class="text-danger">*</span></label>
-                                <input id="father_name" {{ auth()->user()->account_details_change_limitations ? 'disabled' : '' }} type="text" class="form-control @error('father_name') is-invalid @enderror" name="father_name" value="{{ old('father_name') ?? $user->father_name }}" autocomplete="father_name" placeholder="Father Name">
-
-                                @error('father_name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-
-                            <div class="form-group">
-                                <label for="mother_name" class="form-label">{{ __('Mother\'s Name') }}<span class="text-danger">*</span></label>
-                                <input id="mother_name" {{ auth()->user()->account_details_change_limitations ? 'disabled' : '' }} type="text" class="form-control @error('mother_name') is-invalid @enderror" name="mother_name" value="{{ old('mother_name') ?? $user->mother_name }}" autocomplete="mother_name" placeholder="Mother Name">
-
-                                @error('mother_name')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

@@ -72,7 +72,7 @@
             <li><a href="#contact" class="menu-links">Contact</a></li>
             <li><a href="https://support.exam360.in/freelance-partner">FREELANCE</a></li>
             <li><a href="{{ route('register') }}" class="btn-br bg-btn5 btshad-b2 lnk">Signup <span class="circle"></span></a> </li>
-            <li><a href="{{ route('login') }}" class="btn-br bg-btn5 btshad-b2 lnk">Office Login <span class="circle"></span></a> </li>
+            <li><a href="{{ !auth() ->check() ? route('login') : route('dashboard') }}" class="btn-br bg-btn5 btshad-b2 lnk">Office Login <span class="circle"></span></a> </li>
         </ul>
         <ul class="bottom-nav">
           <li class="prb">
