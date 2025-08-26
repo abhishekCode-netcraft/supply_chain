@@ -157,7 +157,8 @@ class UserController extends Controller
             'business_upload' => $data['business_upload'],
             'email_verified_at' => now(),
             'is_active' => false,
-            'email_verification_code' => null
+            'email_verification_code' => null,
+            'status'=>1
         ]);
 
         // ek hi bar use karne ke liye session clear
@@ -168,6 +169,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'name'             => 'required|string|max:255',
             'email'            => 'required|email|unique:users,email',
@@ -207,15 +209,16 @@ class UserController extends Controller
             'business_phone'           => $request->business_phone,
             'personal_upload'          => $personalFilePath,
             'business_upload'          => $businessFilePath,
-            'email_verification_code'  => $verificationCode,
-            'email_verified_at'        => null,
+            'email_verification_code' => null,
+            'email_verified_at' => now(),
             'is_active' => 1,
+            'status'=>1
         ]);
 
         // Send email verification button to user:
-        Mail::to($user->email)->send(new \App\Mail\VerifyEmailCode($user));
+        // Mail::to($user->email)->send(new \App\Mail\VerifyEmailCode($user));
 
-        return redirect()->route('users.index')->with('success', 'User created & verification email sent.');
+        return redirect()->route('users.index')->with('success', 'User created.');
     }
 
     public function create()
@@ -321,7 +324,7 @@ class UserController extends Controller
         $user->business_email   = $request->business_email;
         $user->business_phone   = $request->business_phone;
         $user->order_date = $request->order_date;
-         $user->underProcess_order_date = $request->underProcess_order_date;
+        $user->underProcess_order_date = $request->underProcess_order_date;
 
         $user->save();
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
