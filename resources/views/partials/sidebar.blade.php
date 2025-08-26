@@ -22,7 +22,7 @@
                 </li>
                 @can('Dashboard')
                 <li class="slide">
-                    <a class="side-menu__item" data-bs-toggle="slide" href="{{ route('dashboard') }}"><i class="side-menu__icon fe fe-home"></i><span class="side-menu__label">{{ __('Dashboard') }}</span></a>
+                    <a class="side-menu__item" data-bs-toggle="slide" href="{{ route('dashboard', ['sort' => 'desc']) }}"><i class="side-menu__icon fe fe-home"></i><span class="side-menu__label">{{ __('Dashboard') }}</span></a>
                 </li>
                 @endcan
                 @can('Manage User')

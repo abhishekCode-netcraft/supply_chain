@@ -37,6 +37,13 @@ class DashboardController extends Controller
                 ->timestamp * 1000;
         }
 
+        $fromDate = request()->get('from_date'); // e.g. 2025-08-01
+        $toDate   = request()->get('to_date');   // e.g. 2025-08-25
+
+        // ✅ Date range filters
+        $fromDateMs = $fromDate ? Carbon::parse($fromDate)->startOfDay()->timestamp * 1000 : null;
+        $toDateMs   = $toDate ? Carbon::parse($toDate)->endOfDay()->timestamp * 1000 : null;
+
         $groupAndPaginate = function ($orders, $perPage = 50, $pageName = 'page') {
             $grouped = $orders->flatMap->items
                 ->groupBy('product_id')
@@ -63,6 +70,9 @@ class DashboardController extends Controller
         $searchUnderprocess = request()->get('search_underprocess');
         $activeTab = request()->get('tab', 'unshipped');
 
+        // -----------------------
+        // ✅ Unshipped Orders
+        // -----------------------
         $unshippedQuery = \App\Models\Order::with('items')
             ->where('order_status', 'unshipped')
             ->where('order_type', 'products');
@@ -70,6 +80,16 @@ class DashboardController extends Controller
         if ($unshippedCutoff) {
             $unshippedQuery->where('created_at', '<', $unshippedCutoff);
         }
+
+        $unshippedQuery->orderBy('created_at', request()->get('sort'));
+
+        if ($fromDateMs) {
+            $unshippedQuery->where('created_at', '>=', $fromDateMs);
+        }
+        if ($toDateMs) {
+            $unshippedQuery->where('created_at', '<=', $toDateMs);
+        }
+
         $unshippedOrders = $unshippedQuery->get();
 
         if ($searchUnshipped) {
@@ -82,13 +102,24 @@ class DashboardController extends Controller
 
         $unshipped = $groupAndPaginate($unshippedOrders, 50, 'unshipped_page');
 
-
+        // -----------------------
+        // ✅ Under Process Orders
+        // -----------------------
         $underProcessQuery = \App\Models\Order::with('items')
             ->where('order_status', 'under_process')
             ->where('order_type', 'products');
 
         if ($underProcessCutoff) {
             $underProcessQuery->where('created_at', '<', $underProcessCutoff);
+        }
+
+        $underProcessQuery->orderBy('created_at', request()->get('sort'));
+
+        if ($fromDateMs) {
+            $underProcessQuery->where('created_at', '>=', $fromDateMs);
+        }
+        if ($toDateMs) {
+            $underProcessQuery->where('created_at', '<=', $toDateMs);
         }
 
         $underProcessOrders = $underProcessQuery->get();

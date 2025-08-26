@@ -62,8 +62,6 @@
 
         @include('partials.sidebar-right')
 
-        <!-- @include('partials.modal') -->
-
         @include('partials.footer')
     </div>
 
