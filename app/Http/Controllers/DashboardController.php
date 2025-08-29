@@ -21,24 +21,40 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        $unshippedCutoff = null;
-        if (!empty($user->order_date)) {
-            $unshippedCutoff = Carbon::now()
-                ->subDays($user->order_date)
+        $unshippedCutMin = null;
+        if (!empty($user->order_date_min)) {
+            $unshippedCutMin = Carbon::now()
+                ->subDays($user->order_date_min)
                 ->startOfDay()
                 ->timestamp * 1000;
         }
 
-        $underProcessCutoff = null;
-        if (!empty($user->underProcess_order_date)) {
-            $underProcessCutoff = Carbon::now()
-                ->subDays($user->underProcess_order_date)
+        $underProcessCutMin = null;
+        if (!empty($user->underProcess_order_date_min)) {
+            $underProcessCutMin = Carbon::now()
+                ->subDays($user->underProcess_order_date_min)
                 ->startOfDay()
                 ->timestamp * 1000;
         }
 
-        $fromDate = request()->get('from_date'); // e.g. 2025-08-01
-        $toDate   = request()->get('to_date');   // e.g. 2025-08-25
+        $unshippedCutMax = null;
+        if (!empty($user->order_date_max)) {
+            $unshippedCutMax = Carbon::now()
+                ->subDays($user->order_date_max)
+                ->startOfDay()
+                ->timestamp * 1000;
+        }
+
+        $underProcessCutMax = null;
+        if (!empty($user->underProcess_order_date_max)) {
+            $underProcessCutMax = Carbon::now()
+                ->subDays($user->underProcess_order_date_max)
+                ->startOfDay()
+                ->timestamp * 1000;
+        }
+
+        $fromDate = request()->get('from_date');
+        $toDate   = request()->get('to_date');
 
         // ✅ Date range filters
         $fromDateMs = $fromDate ? Carbon::parse($fromDate)->startOfDay()->timestamp * 1000 : null;
@@ -77,15 +93,12 @@ class DashboardController extends Controller
             ->where('order_status', 'unshipped')
             ->where('order_type', 'products');
 
-        if ($unshippedCutoff) {
-            $unshippedQuery->where('created_at', '<', $unshippedCutoff);
-        }
-
         $unshippedQuery->orderBy('created_at', request()->get('sort'));
 
         if ($fromDateMs) {
             $unshippedQuery->where('created_at', '>=', $fromDateMs);
         }
+        
         if ($toDateMs) {
             $unshippedQuery->where('created_at', '<=', $toDateMs);
         }
@@ -109,8 +122,12 @@ class DashboardController extends Controller
             ->where('order_status', 'under_process')
             ->where('order_type', 'products');
 
-        if ($underProcessCutoff) {
-            $underProcessQuery->where('created_at', '<', $underProcessCutoff);
+        if ($underProcessCutMin) {
+            $underProcessQuery->where('created_at', '<', $underProcessCutMin);
+        }
+
+        if ($underProcessCutMax) {
+            $underProcessQuery->where('created_at', '>', $underProcessCutMax);
         }
 
         $underProcessQuery->orderBy('created_at', request()->get('sort'));

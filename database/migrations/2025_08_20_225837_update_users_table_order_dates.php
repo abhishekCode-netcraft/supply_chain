@@ -9,15 +9,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-        
-            $table->bigInteger('underProcess_order_date')->nullable();
+            $table->bigInteger('underProcess_order_date_min')->nullable();
+            $table->bigInteger('underProcess_order_date_max')->nullable();
         });
     }
 
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('underProcess_order_date');
+            $table->dropColumn('underProcess_order_date_min');
+            $table->dropColumn('underProcess_order_date_max');
         });
     }
 };

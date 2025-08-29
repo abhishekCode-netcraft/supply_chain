@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-           
-            $table->bigInteger('order_date')->nullable(); 
+            $table->bigInteger('order_date_min')->nullable(); 
+            $table->bigInteger('order_date_max')->nullable();
         });
     }
 
@@ -23,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('order_date');
+            $table->dropColumn('order_date_min');
+            $table->dropColumn('order_date_max');
         });
     }
 };

@@ -14,7 +14,7 @@
       <div class="row">
         {{-- Personal --}}
         <div class="col-md-6">
-          <h5 class="border-bottom pb-2 mb-3">Personal Information</h5>
+          <h5 class="border-bottom pb-2 mb-3 fw-bold">Personal Information</h5>
 
           <div class="mb-2">
             <label class="form-label">Name</label>
@@ -71,7 +71,7 @@
 
         {{-- Business --}}
         <div class="col-md-6">
-          <h5 class="border-bottom pb-2 mb-3">Business Information</h5>
+          <h5 class="border-bottom pb-2 mb-3 fw-bold">Business Information</h5>
 
           <div class="mb-2">
             <label class="form-label">Business Name</label>
@@ -122,28 +122,54 @@
 
       {{-- Extra fields in one row --}}
       <div class="row mb-2 mt-3">
-        <div class="col-md-6">
-          <label class="form-label">Unshipped Order Date (Numeric)</label>
-          <input type="number"
-            name="order_date"
-            value="{{ old('order_date', $user->order_date) }}"
-            class="form-control"
-            placeholder="Enter Unshipped order date in numbers">
+        <div class='col-md-6'>
+          <div class='row'>
+            <div class="col-md-6">
+              <label class="form-label">Unshipped Order Date (Min)</label>
+              <input type="number"
+                name="order_date_min"
+                value="{{ old('order_date_min', $user->order_date_min) }}"
+                class="form-control"
+                placeholder="Enter Unshipped order date in numbers">
+            </div>
+  
+            <div class="col-md-6">
+              <label class="form-label">Unshipped Order Date (Max)</label>
+              <input type="number"
+                name="order_date_max"
+                value="{{ old('order_date_max', $user->order_date_max) }}"
+                class="form-control"
+                placeholder="Enter Unshipped order date in numbers">
+            </div>
+          </div>
         </div>
 
-        <div class="col-md-6">
-          <label class="form-label">Under Process Order Date (Numeric)</label>
-          <input type="number"
-            name="underProcess_order_date"
-            value="{{ old('underProcess_order_date', $user->underProcess_order_date) }}"
-            class="form-control"
-            placeholder="Enter Under Process order date in numbers">
-        </div>
+          <div class="col-md-6">
+            <div class='row'>
+              <div class='col-md-6'>
+                  <label class="form-label">Under Process Order Date (Min)</label>
+                  <input type="number"
+                    name="underProcess_order_date_min"
+                    value="{{ old('underProcess_order_date_min', $user->underProcess_order_date_min) }}"
+                    class="form-control"
+                    placeholder="Enter Under Process order date in numbers">
+              </div>
 
+              <div class='col-md-6'>
+                <label class="form-label">Under Process Order Date (Max)</label>
+                <input type="number"
+                  name="underProcess_order_date_max"
+                  value="{{ old('underProcess_order_date_max', $user->underProcess_order_date_max) }}"
+                  class="form-control"
+                  placeholder="Enter Under Process order date in numbers">
+              </div>
+            </div>
+          </div>
+      </div>
 
       {{-- Security --}}
       <div class="mt-3">
-        <h5 class="border-bottom pb-2 mb-3">Security</h5>
+        <h5 class="border-bottom pb-2 mb-3 fw-bold">Security</h5>
 
         <div class="mb-2">
           <label class="form-label">Password</label>

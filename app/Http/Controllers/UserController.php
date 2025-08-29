@@ -50,38 +50,9 @@ class UserController extends Controller
         return view('user.index', compact('users', 'roles'));
     }
 
-    public function generateOTP($n)
-    {
-        $generator = "1357902468";
-        $result = "";
-
-        for ($i = 1; $i <= $n; $i++) {
-            $result .= substr($generator, rand() % strlen($generator), 1);
-        }
-
-        // Returning the result
-        return $result;
-    }
-
-    public function registerOTP()
-    {
-        $otp = $this->generateOTP(6);
-
-        session()->flash('otp', $otp);
-
-        Mail::to('abhishek86478@gmail.com')->send(new RegisterOtpMail($otp, request()->name));
-
-        session()->flash('success', __('OTP Send to Admin'));
-
-        return view('auth.enter-otp', ['register' => true]);
-    }
-
-
     public function register(Request $request)
     {
-
         $request->validate([
-
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'mobile' => 'required|digits_between:8,15',
@@ -161,7 +132,6 @@ class UserController extends Controller
             'status'=>1
         ]);
 
-        // ek hi bar use karne ke liye session clear
         session()->forget('register_data');
 
         return redirect()->route('login')->with('success', 'Your email has been verified! Please wait for admin approval.');
@@ -169,7 +139,6 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
             'name'             => 'required|string|max:255',
             'email'            => 'required|email|unique:users,email',
@@ -289,10 +258,10 @@ class UserController extends Controller
             'business_phone'   => 'nullable|digits_between:8,15',
             'personal_upload'  => 'nullable|file',
             'business_upload'  => 'nullable|file',
-            'order_date'       => 'nullable|numeric',
-            'underProcess_order_date'       => 'nullable|numeric',
-
-
+            'order_date_min'       => 'nullable|numeric',
+            'order_date_max'       => 'nullable|numeric',
+            'underProcess_order_date_min'       => 'nullable|numeric',
+            'underProcess_order_date_max'       => 'nullable|numeric',
         ]);
 
 
@@ -323,10 +292,12 @@ class UserController extends Controller
         $user->business_address = $request->business_address;
         $user->business_email   = $request->business_email;
         $user->business_phone   = $request->business_phone;
-        $user->order_date = $request->order_date;
-        $user->underProcess_order_date = $request->underProcess_order_date;
-
+        $user->order_date_min = $request->order_date_min;
+        $user->order_date_max = $request->order_date_max;
+        $user->underProcess_order_date_min = $request->underProcess_order_date_min;
+        $user->underProcess_order_date_max = $request->underProcess_order_date_max;
         $user->save();
+
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
