@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\OrdersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DashboardController extends Controller
 {
@@ -56,9 +58,10 @@ class DashboardController extends Controller
         $fromDate = request()->get('from_date');
         $toDate   = request()->get('to_date');
 
-        // ✅ Date range filters
+
         $fromDateMs = $fromDate ? Carbon::parse($fromDate)->startOfDay()->timestamp * 1000 : null;
         $toDateMs   = $toDate ? Carbon::parse($toDate)->endOfDay()->timestamp * 1000 : null;
+
 
         $groupAndPaginate = function ($orders, $perPage = 50, $pageName = 'page') {
             $grouped = $orders->flatMap->items
@@ -66,6 +69,12 @@ class DashboardController extends Controller
                 ->map(function ($items) {
                     $firstItem = $items->first();
                     $firstItem->order_count = $items->count();
+                    $dates = $items->map(function ($itm) {
+                        return $itm->order->created_at;
+                    })->sortDesc()->values();
+
+
+                    $firstItem->order_dates = $dates;
                     return $firstItem;
                 })
                 ->values();
@@ -93,12 +102,21 @@ class DashboardController extends Controller
             ->where('order_status', 'unshipped')
             ->where('order_type', 'products');
 
+
+        if ($unshippedCutMin) {
+            $unshippedQuery->where('created_at', '<', $unshippedCutMin);
+        }
+
+        if ($unshippedCutMax) {
+            $unshippedQuery->where('created_at', '>', $unshippedCutMax);
+        }
+
         $unshippedQuery->orderBy('created_at', request()->get('sort'));
 
         if ($fromDateMs) {
             $unshippedQuery->where('created_at', '>=', $fromDateMs);
         }
-        
+
         if ($toDateMs) {
             $unshippedQuery->where('created_at', '<=', $toDateMs);
         }
@@ -151,12 +169,47 @@ class DashboardController extends Controller
 
         $underProcess = $groupAndPaginate($underProcessOrders, 50, 'underprocess_page');
 
+        $calcTotals = function ($status, $cutMin = null, $cutMax = null) use ($fromDateMs, $toDateMs) {
+            $query = \App\Models\Order::with('items')
+                ->where('order_status', $status)
+                ->where('order_type', 'products');
+
+            // Filtered totals (cuts)
+            if ($cutMin) $query->where('created_at', '<', $cutMin);
+            if ($cutMax) $query->where('created_at', '>', $cutMax);
+
+            if ($fromDateMs) $query->where('created_at', '>=', $fromDateMs);
+            if ($toDateMs) $query->where('created_at', '<=', $toDateMs);
+
+            $orders = $query->get();
+
+            $allItems = $orders->flatMap->items;
+
+            $titlesTotal = $allItems->unique('product_id')->count(); // Total distinct products
+            $qtyTotal    = $allItems->count(); // Sum of order_count (duplicates included)
+
+            return [
+                'titles' => $titlesTotal,
+                'qty'    => $qtyTotal,
+            ];
+        };
+
+        // --- Unshipped Totals ---
+        $totals['unshippedUF'] = $calcTotals('unshipped'); // no cuts
+        $totals['unshippedFiltered'] = $calcTotals('unshipped', $unshippedCutMin, $unshippedCutMax);
+
+        // --- Under Process Totals ---
+        $totals['underProcessUF'] = $calcTotals('under_process'); // no cuts
+        $totals['underProcessFiltered'] = $calcTotals('under_process', $underProcessCutMin, $underProcessCutMax);
+
+
         return view('dashboard.index', compact(
             'unshipped',
             'underProcess',
             'searchUnshipped',
             'searchUnderprocess',
-            'activeTab'
+            'activeTab',
+            'totals'
         ));
     }
 
@@ -236,18 +289,53 @@ class DashboardController extends Controller
 
             $pagedData = $grouped->slice(($page - 1) * $perPage, $perPage)->values();
         }
+        if ($exportType === 'without_image') {
+            $view = 'exports.export-pdf-table';
+        } else {
+            $view = 'exports.export-pdf.blade';
+        }
 
 
         $pdf = PDF::loadView($view, [
-                'items' => $pagedData,
-                'tab'   => $tab,
-                'generatedAt' => Carbon::now()->format('d-m-Y H:i:s'),
-                'heading' => 'Product List',
-                'user' => auth()->user()
-            ])
+            'items' => $pagedData,
+            'tab'   => $tab,
+            'generatedAt' => Carbon::now()->format('d-m-Y H:i:s'),
+            'heading' => 'Product List',
+            'user' => auth()->user()
+        ])
             ->setPaper('a4', 'portrait')
             ->setOptions(['isRemoteEnabled' => true]);
 
         return $pdf->download("{$tab}_items_page_{$page}.pdf");
+    }
+
+
+
+    public function exportExcel(Request $request)
+    {
+        $tab = $request->get('tab', 'unshipped');
+
+        if ($tab === 'unshipped') {
+            $orders = Order::with('items')
+                ->where('order_status', 'unshipped')
+                ->where('order_type', 'products')
+                ->get();
+        } else {
+            $orders = Order::with('items')
+                ->where('order_status', 'under_process')
+                ->where('order_type', 'products')
+                ->get();
+        }
+
+        $grouped = $orders->flatMap->items
+            ->groupBy('product_id')
+            ->map(function ($items) {
+                $firstItem = $items->first();
+                $firstItem->order_count = $items->count();
+                return $firstItem;
+            })
+            ->values();
+
+        return Excel::download(new OrdersExport($grouped, $tab), "{$tab}_items.xlsx");
     }
 }

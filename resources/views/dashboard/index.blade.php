@@ -3,272 +3,337 @@
 @section('title', __("Dashboard"))
 
 @push('css')
-    <style>
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-        
-        @media only screen and (max-width: 600px) {
-            .export-pdf {
-                width:100%;
-            }
-            
-            .search-bar {
-                max-width:370px;
-            }
-        }
+<style>
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
 
-        @media only screen and (min-width: 600px) {
-            .card-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            
-        }
-
-        @media only screen and (min-width: 768px) {
-            .card-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
-            .search-bar {
-                max-width:347px !important;
-            }
-        }
-
-        @media only screen and (min-width: 992px) {
-            .card-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            
-            .search-bar {
-                max-width:50% !important;
-            }
-        }
-
-
-        @media only screen and (min-width: 1200px) {
-            .card-grid {
-                grid-template-columns: repeat(5, 1fr);
-            }
-        }
-
-        .card-title {
-            font-size: 0.95rem;
-        }
-
-        .short-title {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: inline-block;
-            max-width: 100%;
-        }
-
-        .read-more {
-            color: blue;
-            cursor: pointer;
-            font-size: 0.85rem;
-            margin-left: 5px;
-        }
-
-        .image-modal {
-            display: none;
-            position: fixed;
-            z-index: 1050;
-            left: 0;
-            top: 0;
+    @media only screen and (max-width: 600px) {
+        .export-pdf {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
         }
 
-        .image-modal img {
-            max-width: 95%;
-            max-height: 90%;
-            border-radius: 8px;
+        .search-bar {
+            max-width: 370px;
+        }
+    }
+
+    @media only screen and (min-width: 600px) {
+        .card-grid {
+            grid-template-columns: repeat(2, 1fr);
         }
 
-        .image-modal .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 25px;
-            font-size: 30px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
+
+    }
+
+    @media only screen and (min-width: 768px) {
+        .card-grid {
+            grid-template-columns: repeat(3, 1fr);
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease-in-out;
+        .search-bar {
+            max-width: 347px !important;
+        }
+    }
+
+    @media only screen and (min-width: 992px) {
+        .card-grid {
+            grid-template-columns: repeat(4, 1fr);
         }
 
-        .tabs {
-            background-color: #6c5ffc !important;
-            color: white !important;
-            font-size: 16px !important;
+        .search-bar {
+            max-width: 50% !important;
         }
+    }
 
-        /* .tabs.active {
+
+    @media only screen and (min-width: 1200px) {
+        .card-grid {
+            grid-template-columns: repeat(5, 1fr);
+        }
+    }
+
+    .card-title {
+        font-size: 0.95rem;
+    }
+
+    .short-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        max-width: 100%;
+    }
+
+    .read-more {
+        color: blue;
+        cursor: pointer;
+        font-size: 0.85rem;
+        margin-left: 5px;
+    }
+
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 1050;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .image-modal img {
+        max-width: 95%;
+        max-height: 90%;
+        border-radius: 8px;
+    }
+
+    .image-modal .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 25px;
+        font-size: 30px;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .tabs {
+        background-color: #6c5ffc !important;
+        color: white !important;
+        font-size: 16px !important;
+    }
+
+    /* .tabs.active {
             border: 3px solid black !important;
         } */
 
-        /* Common gradient style */
-        .nav-tabs .nav-link {
-            background: linear-gradient(135deg, #1e293b, #0f172a); /* dark gray â†’ almost black */
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            margin: 0 5px;
-            transition: all 0.3s ease;
-        }
+    /* Common gradient style */
+    .nav-tabs .nav-link {
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        /* dark gray â†’ almost black */
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        margin: 0 5px;
+        transition: all 0.3s ease;
+    }
 
-        /* Active tab */
-        .nav-tabs .nav-link.active {
-            background: linear-gradient(135deg, #111827, #1e40af); /* black â†’ dark navy */
-            color: #fff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-        }
+    /* Active tab */
+    .nav-tabs .nav-link.active {
+        background: linear-gradient(135deg, #111827, #1e40af);
+        /* black â†’ dark navy */
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
 
-        /* Hover effect */
-        .nav-tabs .nav-link:hover {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            color: #fff;
-        }
-        
-        .search-bar {
-            display: flex;
-            align-items: center;
-            max-width: 500px;
-            width: 100%;
-            background: rgba(20, 20, 40, 0.8); /* dark background */
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 18px;
-            overflow: hidden;
-            backdrop-filter: blur(6px);
-        }
+    /* Hover effect */
+    .nav-tabs .nav-link:hover {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        color: #fff;
+    }
 
-        .search-bar input {
-            flex: 1;
-            border: none;
-            outline: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            background: transparent;
-            color: #fff;
-        }
+    .search-bar {
+        display: flex;
+        align-items: center;
+        max-width: 500px;
+        width: 100%;
+        background: rgba(20, 20, 40, 0.8);
+        /* dark background */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 18px;
+        overflow: hidden;
+        backdrop-filter: blur(6px);
+    }
 
-        .search-bar input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
+    .search-bar input {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        background: transparent;
+        color: #fff;
+    }
 
-        .search-bar button {
-            border: none;
-            padding: 12px 25px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #111;
-            background: #cbd5e1;
-            cursor: pointer;
-            border-radius: 0 15px 15px 0;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .search-bar input::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
 
-        .search-bar button:hover {
-            background: #94a3b8;
-        }
-        
-        .export-bar {
-            display: flex;
-            align-items: center;
-            gap: 0;
-            background: #1e293b; /* Dark container */
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            max-width: 500px;
-        }
+    .search-bar button {
+        border: none;
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #111;
+        background: #cbd5e1;
+        cursor: pointer;
+        border-radius: 0 15px 15px 0;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-        .export-bar select {
-            flex: 1;
-            border: none;
-            outline: none;
-            padding: 12px 16px;
-            font-size: 15px;
-            background: #334155; /* slightly lighter than container */
-            color: #f8fafc;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
+    .search-bar button:hover {
+        background: #94a3b8;
+    }
 
-        .export-bar select:hover {
-            background: #475569;
-        }
+    .export-bar {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        background: #1e293b;
+        /* Dark container */
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-width: 500px;
+    }
 
-        .export-bar select option {
-            color: #000; /* dropdown options visible */
-        }
+    .export-bar select {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: 12px 16px;
+        font-size: 15px;
+        background: #334155;
+        /* slightly lighter than container */
+        color: #f8fafc;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
 
-        .export-bar button {
-            border: none;
-            padding: 12px 24px;
-            font-size: 15px;
-            font-weight: 600;
-            color: #fff;
-            background: linear-gradient(135deg, #ef4444, #b91c1c);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 0; /* matches container */
-            white-space: nowrap;
-        }
+    .export-bar select:hover {
+        background: #475569;
+    }
 
-        .export-bar button:hover {
-            background: linear-gradient(135deg, #dc2626, #7f1d1d);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-        }
-    </style>
+    .export-bar select option {
+        color: #000;
+        /* dropdown options visible */
+    }
+
+    .export-bar button {
+        border: none;
+        padding: 12px 24px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(135deg, #ef4444, #b91c1c);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 0;
+        /* matches container */
+        white-space: nowrap;
+    }
+
+    .export-bar button:hover {
+        background: linear-gradient(135deg, #dc2626, #7f1d1d);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .totals-container {
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.total-card {
+    min-width: 180px;
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 12px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.total-card h6 {
+    font-size: 0.95rem;
+    color: #1e293b;
+}
+
+.total-card p {
+    font-size: 0.9rem;
+    color: #334155;
+    margin: 0;
+}
+
+.total-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+</style>
 @endpush
 
 @section('content')
 
 <div class="main-container container-fluid">
-    @php
-        // Default active tab
-        $activeTab = $activeTab ?? null;
 
-        // If user does not have "Awaiting" permission but has "Processing"
-        if (!auth()->user()->can('Dashboard -> Awaiting') && auth()->user()->can('Dashboard -> Processing')) {
-            $activeTab = 'underprocess';
-        }
+<div class="totals-container mb-4 d-flex justify-content-end flex-wrap gap-3">
+    <div class="total-card p-3   bg-light">
+        <h6 class="mb-2 fw-bold text-dark">Unshipped (UF)</h6>
+        <p class="mb-1"><strong>Titles:</strong> {{ $totals['unshippedUF']['titles'] }}</p>
+        <p class="mb-0"><strong>Qty:</strong> {{ $totals['unshippedUF']['qty'] }}</p>
+    </div>
+
+    <div class="total-card p-3   bg-light">
+        <h6 class="mb-2 fw-bold text-dark">Unshipped (Filtered)</h6>
+        <p class="mb-1"><strong>Titles:</strong> {{ $totals['unshippedFiltered']['titles'] }}</p>
+        <p class="mb-0"><strong>Qty:</strong> {{ $totals['unshippedFiltered']['qty'] }}</p>
+    </div>
+
+    <div class="total-card p-3   bg-light">
+        <h6 class="mb-2 fw-bold text-dark">Under Process (UF)</h6>
+        <p class="mb-1"><strong>Titles:</strong> {{ $totals['underProcessUF']['titles'] }}</p>
+        <p class="mb-0"><strong>Qty:</strong> {{ $totals['underProcessUF']['qty'] }}</p>
+    </div>
+
+    <div class="total-card p-3  bg-light">
+        <h6 class="mb-2 fw-bold text-dark">Under Process (Filtered)</h6>
+        <p class="mb-1"><strong>Titles:</strong> {{ $totals['underProcessFiltered']['titles'] }}</p>
+        <p class="mb-0"><strong>Qty:</strong> {{ $totals['underProcessFiltered']['qty'] }}</p>
+    </div>
+</div>
+
+    @php
+    // Default active tab
+    $activeTab = $activeTab ?? null;
+
+    // If user does not have "Awaiting" permission but has "Processing"
+    if (!auth()->user()->can('Dashboard -> Awaiting') && auth()->user()->can('Dashboard -> Processing')) {
+    $activeTab = 'underprocess';
+    }
     @endphp
 
     <ul class="nav nav-tabs row g-0" id="orderTabs" role="tablist" style="margin-bottom:20px; border: none;">
         @can('Dashboard -> Awaiting')
-            <li class="nav-item col-6 text-center">
-                <button class="nav-link w-100 py-3 fs-5 fw-bold {{ $activeTab == 'unshipped' ? 'active' : '' }} tabs p-1 justify-content-center"
-                    id="unshipped-tab" data-bs-toggle="tab" data-bs-target="#unshipped" type="button" role="tab">
-                    Awaiting
-                </button>
-            </li>
+        <li class="nav-item col-6 text-center">
+            <button class="nav-link w-100 py-3 fs-5 fw-bold {{ $activeTab == 'unshipped' ? 'active' : '' }} tabs p-1 justify-content-center"
+                id="unshipped-tab" data-bs-toggle="tab" data-bs-target="#unshipped" type="button" role="tab">
+                Awaiting
+            </button>
+        </li>
         @endcan
 
         @can('Dashboard -> Processing')
-            <li class="nav-item col-6 text-center">
-                <button class="nav-link w-100 py-3 fs-5 fw-bold {{ $activeTab == 'underprocess' ? 'active' : '' }} tabs p-1 justify-content-center"
-                    id="underprocess-tab" data-bs-toggle="tab" data-bs-target="#underprocess" type="button" role="tab">
-                    Processing
-                </button>
-            </li>
+        <li class="nav-item col-6 text-center">
+            <button class="nav-link w-100 py-3 fs-5 fw-bold {{ $activeTab == 'underprocess' ? 'active' : '' }} tabs p-1 justify-content-center"
+                id="underprocess-tab" data-bs-toggle="tab" data-bs-target="#underprocess" type="button" role="tab">
+                Processing
+            </button>
+        </li>
         @endcan
     </ul>
 
@@ -345,6 +410,37 @@
                 modal.style.display = "none";
             }
         });
+
+        document.querySelectorAll(".exportForm").forEach(form => {
+            const exportType = form.querySelector(".exportType");
+            const exportButtons = form.querySelector(".exportButtons");
+
+            function updateExportButtons() {
+                const selected = exportType.value;
+
+                if (selected === "without_image") {
+                    exportButtons.innerHTML = `
+                    <button type="submit" formaction="{{ route('dashboard.exportExcel') }}" class="btn btn-success me-2">
+                        📊 Export Excel
+                    </button>
+                    <button type="submit" formaction="{{ route('dashboard.exportPdf') }}">
+                       ðŸ“„ Export PDF
+                    </button>
+                `;
+                } else {
+                    exportButtons.innerHTML = `
+                    <button type="submit" formaction="{{ route('dashboard.exportPdf') }}">
+                       ðŸ“„ Export PDF
+                    </button>
+                `;
+                }
+            }
+
+            updateExportButtons();
+            exportType.addEventListener("change", updateExportButtons);
+        });
     });
 </script>
+
+
 @endpush

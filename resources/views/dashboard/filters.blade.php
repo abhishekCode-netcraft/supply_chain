@@ -5,27 +5,30 @@
             <form method="GET" class="search-bar">
                 <input type="hidden" name="tab" value="{{ $tab }}">
 
-                <input type="text" 
-                        name="{{ $name }}" 
-                        placeholder="Search by Publisher / Book Name"
-                        value="{{ $searchUnshipped }}">
+                <input type="text"
+                    name="{{ $name }}"
+                    placeholder="Search by Publisher / Book Name"
+                    value="{{ $searchUnshipped }}">
 
                 <button type="submit">
-                    Search 
+                    Search
                 </button>
             </form>
 
-            <form method="GET" action="{{ route('dashboard.exportPdf') }}" class="export-bar">
+            <form  method="GET" action="" class="export-bar exportForm">
                 <input type="hidden" name="tab" value="{{ $tab }}">
                 <input type="hidden" name="{{ $name }}" value="{{ $searchUnshipped }}">
                 <input type="hidden" name="{{ $page }}" value="{{ request($page, 1) }}">
 
-                <select name="export_type">
+                <select class="exportType" name="export_type">
                     <option value="with_image">With Images</option>
                     <option value="without_image">Without Images</option>
                 </select>
 
-                <button type="submit">ðŸ“„ Export PDF</button>
+
+                <div  class="exportButtons  d-flex">
+                    <button type="submit">ðŸ“„ Export PDF</button>
+                </div>
             </form>
 
             <form method="GET" class="export-bar">
@@ -45,12 +48,12 @@
                 <input type="hidden" name="{{ $page }}" value="{{ request($page, 1) }}">
                 <input type="hidden" name="sort" value="{{ request()->sort }}">
 
-               <label class='fw-bold'> From 
-                   <input type='date' name='from_date' class='form-control' value="{{ request('from_date') }}"/>
-               </label>
-               <label class='fw-bold'> To 
-                   <input type='date' name='to_date' class='form-control' value="{{ request('to_date') }}"/>
-               </label>
+                <label class='fw-bold'> From
+                    <input type='date' name='from_date' class='form-control' value="{{ request('from_date') }}" />
+                </label>
+                <label class='fw-bold'> To
+                    <input type='date' name='to_date' class='form-control' value="{{ request('to_date') }}" />
+                </label>
 
                 <button type="submit" class='btn btn-primary'>Search</button>
             </form>

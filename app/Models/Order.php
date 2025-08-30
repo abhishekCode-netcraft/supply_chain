@@ -11,6 +11,11 @@ class Order extends Model
         'order_id',
         'order_type',
         'order_status',
+        'created_at'
+    ];
+
+        protected $casts = [
+        'created_at' => 'string',
     ];
 
     public function items()

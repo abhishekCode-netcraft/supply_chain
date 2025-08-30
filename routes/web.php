@@ -32,6 +32,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web']], function ()
 
     Route::get('/dashboard/export-pdf', [DashboardController::class, 'exportPdf'])
         ->name('dashboard.exportPdf');
+          Route::get('/dashboard/export-excel', [DashboardController::class, 'exportExcel'])
+        ->name('dashboard.exportExcel');
 
     // Profile Routes
     Route::group(['prefix' => 'profile'], function () {

@@ -30,7 +30,7 @@
                     <a class="side-menu__item" data-bs-toggle="slide" href="{{ route('users.index') }}"><i class="side-menu__icon fe fe-home"></i><span class="side-menu__label">{{ __('Manage Users') }}</span></a>
                 </li>
                 @endcan
-                @if(auth()->user()->can('Roles & Permissions (Main Menu)'))
+             
                 <li class="slide {{ (request()->is('admin/roles/*') || request()->is('admin/roles')) ? 'is-expanded' : '' }}">
                     <a class="side-menu__item  {{ request()->is('admin/roles*') ? 'active is-expanded' : '' }}" data-bs-toggle="slide" href="javascript:void(0)"><i class="side-menu__icon fe fe-lock"></i><span class="side-menu__label">{{ __('Roles & Permissions') }}</span><i class="angle fe fe-chevron-right"></i></a>
                     <ul class="slide-menu">
@@ -39,14 +39,14 @@
                             <a href="{{ route('roles.create') }}" class="slide-item  {{ request()->is('admin/roles/create') ? 'active' : '' }}">{{ __('Create New Roles') }}</a>
                         </li>
                         @endcan
-                        @can ('Assign Permissions to Roles')
+                      
                         <li>
                             <a href="{{ route('roles.index') }}" class="slide-item  {{ (request()->is('admin/roles') || request()->is('admin/roles/edit')) ? 'active' : '' }}">{{ __('Assign Permissions to Roles') }}</a>
                         </li>
-                        @endcan
+                  
                     </ul>
                 </li>
-                @endif
+              
             </ul>
         </div>
     </div>
