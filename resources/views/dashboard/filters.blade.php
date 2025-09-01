@@ -27,7 +27,7 @@
 
 
                 <div  class="exportButtons  d-flex">
-                    <button type="submit">ðŸ“„ Export PDF</button>
+                 
                 </div>
             </form>
 

@@ -174,7 +174,7 @@ class DashboardController extends Controller
                 ->where('order_status', $status)
                 ->where('order_type', 'products');
 
-            // Filtered totals (cuts)
+          
             if ($cutMin) $query->where('created_at', '<', $cutMin);
             if ($cutMax) $query->where('created_at', '>', $cutMax);
 
@@ -185,8 +185,8 @@ class DashboardController extends Controller
 
             $allItems = $orders->flatMap->items;
 
-            $titlesTotal = $allItems->unique('product_id')->count(); // Total distinct products
-            $qtyTotal    = $allItems->count(); // Sum of order_count (duplicates included)
+            $titlesTotal = $allItems->unique('product_id')->count();
+            $qtyTotal    = $allItems->count();
 
             return [
                 'titles' => $titlesTotal,
@@ -194,12 +194,12 @@ class DashboardController extends Controller
             ];
         };
 
-        // --- Unshipped Totals ---
-        $totals['unshippedUF'] = $calcTotals('unshipped'); // no cuts
+      
+        $totals['unshippedUF'] = $calcTotals('unshipped'); 
         $totals['unshippedFiltered'] = $calcTotals('unshipped', $unshippedCutMin, $unshippedCutMax);
 
-        // --- Under Process Totals ---
-        $totals['underProcessUF'] = $calcTotals('under_process'); // no cuts
+       
+        $totals['underProcessUF'] = $calcTotals('under_process');
         $totals['underProcessFiltered'] = $calcTotals('under_process', $underProcessCutMin, $underProcessCutMax);
 
 

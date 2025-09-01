@@ -245,35 +245,34 @@
     }
 
     .totals-container {
-    flex-wrap: wrap;
-    gap: 1rem;
-}
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
 
-.total-card {
-    min-width: 180px;
-    background: #f8fafc;
-    border-radius: 10px;
-    padding: 12px 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+    .total-card {
+        min-width: 180px;
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 12px 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-.total-card h6 {
-    font-size: 0.95rem;
-    color: #1e293b;
-}
+    .total-card h6 {
+        font-size: 0.95rem;
+        color: #1e293b;
+    }
 
-.total-card p {
-    font-size: 0.9rem;
-    color: #334155;
-    margin: 0;
-}
+    .total-card p {
+        font-size: 0.9rem;
+        color: #334155;
+        margin: 0;
+    }
 
-.total-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
+    .total-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
 </style>
 @endpush
 
@@ -281,31 +280,31 @@
 
 <div class="main-container container-fluid">
 
-<div class="totals-container mb-4 d-flex justify-content-end flex-wrap gap-3">
-    <div class="total-card p-3   bg-light">
-        <h6 class="mb-2 fw-bold text-dark">Unshipped (UF)</h6>
-        <p class="mb-1"><strong>Titles:</strong> {{ $totals['unshippedUF']['titles'] }}</p>
-        <p class="mb-0"><strong>Qty:</strong> {{ $totals['unshippedUF']['qty'] }}</p>
-    </div>
+    <div class="totals-container mb-4 d-flex justify-content-end flex-wrap gap-3">
+        <div class="total-card p-3   bg-light">
+            <h6 class="mb-2 fw-bold text-dark">Unshipped (UF)</h6>
+            <p class="mb-1"><strong>Titles:</strong> {{ $totals['unshippedUF']['titles'] }}</p>
+            <p class="mb-0"><strong>Qty:</strong> {{ $totals['unshippedUF']['qty'] }}</p>
+        </div>
 
-    <div class="total-card p-3   bg-light">
-        <h6 class="mb-2 fw-bold text-dark">Unshipped (Filtered)</h6>
-        <p class="mb-1"><strong>Titles:</strong> {{ $totals['unshippedFiltered']['titles'] }}</p>
-        <p class="mb-0"><strong>Qty:</strong> {{ $totals['unshippedFiltered']['qty'] }}</p>
-    </div>
+        <div class="total-card p-3   bg-light">
+            <h6 class="mb-2 fw-bold text-dark">Unshipped (Filtered)</h6>
+            <p class="mb-1"><strong>Titles:</strong> {{ $totals['unshippedFiltered']['titles'] }}</p>
+            <p class="mb-0"><strong>Qty:</strong> {{ $totals['unshippedFiltered']['qty'] }}</p>
+        </div>
 
-    <div class="total-card p-3   bg-light">
-        <h6 class="mb-2 fw-bold text-dark">Under Process (UF)</h6>
-        <p class="mb-1"><strong>Titles:</strong> {{ $totals['underProcessUF']['titles'] }}</p>
-        <p class="mb-0"><strong>Qty:</strong> {{ $totals['underProcessUF']['qty'] }}</p>
-    </div>
+        <div class="total-card p-3   bg-light">
+            <h6 class="mb-2 fw-bold text-dark">Under Process (UF)</h6>
+            <p class="mb-1"><strong>Titles:</strong> {{ $totals['underProcessUF']['titles'] }}</p>
+            <p class="mb-0"><strong>Qty:</strong> {{ $totals['underProcessUF']['qty'] }}</p>
+        </div>
 
-    <div class="total-card p-3  bg-light">
-        <h6 class="mb-2 fw-bold text-dark">Under Process (Filtered)</h6>
-        <p class="mb-1"><strong>Titles:</strong> {{ $totals['underProcessFiltered']['titles'] }}</p>
-        <p class="mb-0"><strong>Qty:</strong> {{ $totals['underProcessFiltered']['qty'] }}</p>
+        <div class="total-card p-3  bg-light">
+            <h6 class="mb-2 fw-bold text-dark">Under Process (Filtered)</h6>
+            <p class="mb-1"><strong>Titles:</strong> {{ $totals['underProcessFiltered']['titles'] }}</p>
+            <p class="mb-0"><strong>Qty:</strong> {{ $totals['underProcessFiltered']['qty'] }}</p>
+        </div>
     </div>
-</div>
 
     @php
     // Default active tab
@@ -410,35 +409,52 @@
                 modal.style.display = "none";
             }
         });
+document.querySelectorAll(".exportForm").forEach(form => {
+    const exportType = form.querySelector(".exportType");
+    const exportButtons = form.querySelector(".exportButtons");
 
-        document.querySelectorAll(".exportForm").forEach(form => {
-            const exportType = form.querySelector(".exportType");
-            const exportButtons = form.querySelector(".exportButtons");
+    function updateExportButtons() {
+        const selected = exportType.value;
 
-            function updateExportButtons() {
-                const selected = exportType.value;
+        if (selected === "without_image") {
+            exportButtons.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <select name="export_format" class="form-select me-2" style="min-height:50px">
+                        <option value="excel">only Export</option>
+                        <option value="pdf">ðŸ“„ Export PDF</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Export</button>
+                </div>
+            `;
 
-                if (selected === "without_image") {
-                    exportButtons.innerHTML = `
-                    <button type="submit" formaction="{{ route('dashboard.exportExcel') }}" class="btn btn-success me-2">
-                        📊 Export Excel
-                    </button>
-                    <button type="submit" formaction="{{ route('dashboard.exportPdf') }}">
-                       ðŸ“„ Export PDF
-                    </button>
-                `;
-                } else {
-                    exportButtons.innerHTML = `
-                    <button type="submit" formaction="{{ route('dashboard.exportPdf') }}">
-                       ðŸ“„ Export PDF
-                    </button>
-                `;
+           
+            const button = exportButtons.querySelector("button[type='submit']");
+            button.setAttribute("formaction", "{{ route('dashboard.exportExcel') }}");
+
+          
+            const formatSelect = exportButtons.querySelector("select[name='export_format']");
+            formatSelect.addEventListener("change", () => {
+                if (formatSelect.value === "excel") {
+                    button.setAttribute("formaction", "{{ route('dashboard.exportExcel') }}");
+                } else if (formatSelect.value === "pdf") {
+                    button.setAttribute("formaction", "{{ route('dashboard.exportPdf') }}");
                 }
-            }
+            });
 
-            updateExportButtons();
-            exportType.addEventListener("change", updateExportButtons);
-        });
+        } else {
+            exportButtons.innerHTML = `
+                <button type="submit" formaction="{{ route('dashboard.exportPdf') }}" class="btn btn-primary">
+                  ðŸ“„ Export PDF
+                </button>
+            `;
+        }
+    }
+
+    updateExportButtons();
+    exportType.addEventListener("change", updateExportButtons);
+});
+
+
     });
 </script>
 

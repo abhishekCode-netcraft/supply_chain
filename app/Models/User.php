@@ -32,6 +32,8 @@ class User extends Authenticatable
         'personal_upload',   
         'business_upload',
         'status',
+         'otp',
+           'otp_feature',
         'is_active',
         'password',
         "email_verification_code",
