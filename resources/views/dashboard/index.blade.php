@@ -286,23 +286,23 @@
             <h6 class="mb-2 fw-bold text-white text-center" style="background: linear-gradient(135deg, #dc2626, #7f1d1d);">AWAITING</h6>
             <!--<hr>-->
             <div class='d-flex gap-2'>
-                    <p class="mb-1"><strong>Odr (UF):</strong> 1000</p> |
-                    <p class="mb-1"><strong>Titles (UF):</strong> {{ $totals['unshippedUF']['titles'] }}</p> | 
-                    <p class="mb-1"><strong>Qty (UF):</strong> {{ $totals['unshippedUF']['qty'] }}</p> | 
-                    <p class="mb-1"><strong>Odr (F):</strong> 0</p> |
-                    <p class="mb-1"><strong>Titles (F):</strong> {{ $totals['unshippedFiltered']['titles'] }}</p> |
-                    <p class="mb-0"><strong>Qty (F):</strong> {{ $totals['unshippedFiltered']['qty'] }}</p>
-                
+                <p class="mb-1"><strong>Odr (UF):</strong> {{ $totals['unshippedUF']['orders'] }}</p> |
+                <p class="mb-1"><strong>Titles (UF):</strong> {{ $totals['unshippedUF']['titles'] }}</p> |
+                <p class="mb-1"><strong>Qty (UF):</strong> {{ $totals['unshippedUF']['qty'] }}</p> |
+                <p class="mb-1"><strong>Odr (F):</strong> {{ $totals['unshippedFiltered']['orders'] }}</p> |
+                <p class="mb-1"><strong>Titles (F):</strong> {{ $totals['unshippedFiltered']['titles'] }}</p> |
+                <p class="mb-0"><strong>Qty (F):</strong> {{ $totals['unshippedFiltered']['qty'] }}</p>
+
             </div>
         </div>
         <div class="total-card bg-light">
             <h6 class="mb-2 fw-bold text-white text-center" style="background: linear-gradient(135deg, #dc2626, #7f1d1d);">PROCESSING</h6>
             <!--<hr>-->
             <div class='d-flex gap-2'>
-                <p class="mb-1"><strong>Odr (UF):</strong> 0</p> |
+                <p class="mb-1"><strong>Odr (UF):</strong> {{ $totals['underProcessUF']['orders'] }}</p> |
                 <p class="mb-1"><strong>Titles (UF):</strong> {{ $totals['underProcessUF']['titles'] }}</p> |
                 <p class="mb-1"><strong>Qty (UF):</strong> {{ $totals['underProcessUF']['qty'] }}</p> |
-                <p class="mb-1"><strong>Odr (F):</strong> 0</p> |
+                <p class="mb-1"><strong>Odr (F):</strong> {{ $totals['underProcessFiltered']['orders'] }}</p> |
                 <p class="mb-1"><strong>Titles (F):</strong> {{ $totals['underProcessFiltered']['titles'] }}</p> |
                 <p class="mb-0"><strong>Qty (F):</strong> {{ $totals['underProcessFiltered']['qty'] }}</p>
             </div>
@@ -373,48 +373,43 @@
 @push('js')
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll('.read-more').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const cardTitle = this.closest('.card-title');
-                const shortTitle = cardTitle.querySelector('.short-title');
-                const fullTitle = cardTitle.querySelector('.full-title');
+    $(document).ready(function () {
+        $('.read-more').on('click', function () {
+            let cardTitle = $(this).closest('.card-title');
+            let shortTitle = cardTitle.find('.short-title');
+            let fullTitle = cardTitle.find('.full-title');
 
-                if (shortTitle.classList.contains('d-none')) {
-                    shortTitle.classList.remove('d-none');
-                    fullTitle.classList.add('d-none');
-                    this.textContent = "Read more";
-                } else {
-                    shortTitle.classList.add('d-none');
-                    fullTitle.classList.remove('d-none');
-                    this.textContent = "Read less";
-                }
-            });
-        });
-
-        const modal = document.getElementById("imageModal");
-        const modalImg = document.getElementById("modalImage");
-        const closeBtn = modal.querySelector(".close-btn");
-
-        document.querySelectorAll(".open-image").forEach(imgLink => {
-            imgLink.addEventListener("click", function() {
-                modal.style.display = "flex";
-                modalImg.src = this.dataset.src;
-            });
-        });
-
-        closeBtn.addEventListener("click", function() {
-            modal.style.display = "none";
-        });
-
-        modal.addEventListener("click", function(e) {
-            if (e.target === modal) {
-                modal.style.display = "none";
+            if (shortTitle.hasClass('d-none')) {
+                shortTitle.removeClass('d-none');
+                fullTitle.addClass('d-none');
+                $(this).text("Read more");
+            } else {
+                shortTitle.addClass('d-none');
+                fullTitle.removeClass('d-none');
+                $(this).text("Read less");
             }
         });
 
+        let modal = $('#imageModal');
+        let modalImg = $('#modalImage');
+
+        $('.open-image').on('click', function () {
+            modal.css('display', 'flex');
+            modalImg.attr('src', $(this).data('src'));
+        });
+
+        modal.find('.close-btn').on('click', function () {
+            modal.css('display', 'none');
+        });
+
+        modal.on('click', function (e) {
+            if (e.target === this) {
+                modal.css('display', 'none');
+            }
+        });
     });
 </script>
+
 
 
 @endpush
