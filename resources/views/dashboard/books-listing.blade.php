@@ -10,11 +10,13 @@
             <span class="badge bg-danger position-absolute top-0 start-100 translate-middle"
                 data-bs-toggle="tooltip"
                 data-bs-html="true"
+                @if(auth()->user()->hasRole('Super Admin'))
                 title="
-        @foreach($item->order_dates as $ms)
-            {{ \Carbon\Carbon::createFromTimestampMs((int)$ms)->format('d-m-Y') }}@if(!$loop->last), @endif
-        @endforeach
-      ">
+                    @foreach($item->order_dates as $ms)
+                        {{ \Carbon\Carbon::createFromTimestampMs((int)$ms)->format('d-m-Y') }}@if(!$loop->last), @endif
+                    @endforeach"
+                @endif
+                >
                 {{ $item->order_count }}
             </span>
 

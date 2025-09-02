@@ -153,21 +153,22 @@ class LoginController extends Controller
     }
 
     // OTP authentication
-public function authenticateOTP(Request $request)
-{
-    $user = User::where('email', $request->email)->first();
+    public function authenticateOTP(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
 
-    if (!$user || !Hash::check($request->password, $user->password)) {
-        session()->flash('error', 'Oops! Email or Password Mismatch');
-        return redirect()->route('login');
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            session()->flash('error', 'Oops! Email or Password Mismatch');
+            return redirect()->route('login');
+        }
+
+        $otp = $this->generateOTP(6);
+        $user->update(['otp' => $otp]);
+
+        Mail::to($user->email)->send(new OtpMail($otp, null, $user->name));
+        
+        session()->flash('success', 'Please check your email for the OTP.');
+
+        return view('auth.enter-otp', ['email' => $user->email]);
     }
-
-    $otp = $this->generateOTP(6);
-    $user->update(['otp' => $otp]);
-
-    Mail::to($user->email)->send(new OtpMail($otp, null, $user->name));
-    session()->flash('success', 'Please check your email for the OTP.');
-
-    return view('auth.enter-otp', ['email' => $user->email]);
-}
 }

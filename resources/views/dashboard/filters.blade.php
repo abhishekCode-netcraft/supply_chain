@@ -22,12 +22,14 @@
 
                 <select class="exportType" name="export_type">
                     <option value="with_image">With Images</option>
-                    <option value="without_image">Without Images</option>
+                    <option value="without_image">Without Images (PDF)</option>
+                    <option value="without_image_xls">Without Images (XLS)</option>
                 </select>
 
-
                 <div  class="exportButtons  d-flex">
-                 
+                    <button type="submit" formaction="{{ route('dashboard.exportPdf') }}" class="btn btn-primary">
+                        ðŸ“„ Export
+                        </button>
                 </div>
             </form>
 

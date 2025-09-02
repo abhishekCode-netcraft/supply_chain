@@ -272,7 +272,6 @@ class DashboardController extends Controller
             }
         }
 
-
         $grouped = $orders->flatMap->items
             ->groupBy('product_id')
             ->map(function ($items) {
@@ -283,18 +282,18 @@ class DashboardController extends Controller
             ->values();
 
         if ($exportType === 'without_image') {
-
             $pagedData = $grouped->values();
         } else {
-
             $pagedData = $grouped->slice(($page - 1) * $perPage, $perPage)->values();
         }
+
         if ($exportType === 'without_image') {
             $view = 'exports.export-pdf-table';
+        } else if ($exportType === 'without_image_xls') {
+            return $this->exportExcel($request);
         } else {
-            $view = 'exports.export-pdf.blade';
+            $view = 'exports.export-pdf';
         }
-
 
         $pdf = PDF::loadView($view, [
             'items' => $pagedData,
@@ -308,8 +307,6 @@ class DashboardController extends Controller
 
         return $pdf->download("{$tab}_items_page_{$page}.pdf");
     }
-
-
 
     public function exportExcel(Request $request)
     {

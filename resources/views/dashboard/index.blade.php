@@ -280,31 +280,35 @@
 
 <div class="main-container container-fluid">
 
-    <div class="totals-container mb-4 d-flex justify-content-end flex-wrap gap-3">
-        <div class="total-card p-3   bg-light">
-            <h6 class="mb-2 fw-bold text-dark">Unshipped (UF)</h6>
-            <p class="mb-1"><strong>Titles:</strong> {{ $totals['unshippedUF']['titles'] }}</p>
-            <p class="mb-0"><strong>Qty:</strong> {{ $totals['unshippedUF']['qty'] }}</p>
+    @if(auth()->user()->hasRole('Super Admin'))
+    <div class="mb-4 d-flex justify-content-around gap-3">
+        <div class="total-card bg-light" style="margin-right: 20px;">
+            <h6 class="mb-2 fw-bold text-white text-center" style="background: linear-gradient(135deg, #dc2626, #7f1d1d);">AWAITING</h6>
+            <!--<hr>-->
+            <div class='d-flex gap-2'>
+                    <p class="mb-1"><strong>Odr (UF):</strong> 1000</p> |
+                    <p class="mb-1"><strong>Titles (UF):</strong> {{ $totals['unshippedUF']['titles'] }}</p> | 
+                    <p class="mb-1"><strong>Qty (UF):</strong> {{ $totals['unshippedUF']['qty'] }}</p> | 
+                    <p class="mb-1"><strong>Odr (F):</strong> 0</p> |
+                    <p class="mb-1"><strong>Titles (F):</strong> {{ $totals['unshippedFiltered']['titles'] }}</p> |
+                    <p class="mb-0"><strong>Qty (F):</strong> {{ $totals['unshippedFiltered']['qty'] }}</p>
+                
+            </div>
         </div>
-
-        <div class="total-card p-3   bg-light">
-            <h6 class="mb-2 fw-bold text-dark">Unshipped (Filtered)</h6>
-            <p class="mb-1"><strong>Titles:</strong> {{ $totals['unshippedFiltered']['titles'] }}</p>
-            <p class="mb-0"><strong>Qty:</strong> {{ $totals['unshippedFiltered']['qty'] }}</p>
-        </div>
-
-        <div class="total-card p-3   bg-light">
-            <h6 class="mb-2 fw-bold text-dark">Under Process (UF)</h6>
-            <p class="mb-1"><strong>Titles:</strong> {{ $totals['underProcessUF']['titles'] }}</p>
-            <p class="mb-0"><strong>Qty:</strong> {{ $totals['underProcessUF']['qty'] }}</p>
-        </div>
-
-        <div class="total-card p-3  bg-light">
-            <h6 class="mb-2 fw-bold text-dark">Under Process (Filtered)</h6>
-            <p class="mb-1"><strong>Titles:</strong> {{ $totals['underProcessFiltered']['titles'] }}</p>
-            <p class="mb-0"><strong>Qty:</strong> {{ $totals['underProcessFiltered']['qty'] }}</p>
+        <div class="total-card bg-light">
+            <h6 class="mb-2 fw-bold text-white text-center" style="background: linear-gradient(135deg, #dc2626, #7f1d1d);">PROCESSING</h6>
+            <!--<hr>-->
+            <div class='d-flex gap-2'>
+                <p class="mb-1"><strong>Odr (UF):</strong> 0</p> |
+                <p class="mb-1"><strong>Titles (UF):</strong> {{ $totals['underProcessUF']['titles'] }}</p> |
+                <p class="mb-1"><strong>Qty (UF):</strong> {{ $totals['underProcessUF']['qty'] }}</p> |
+                <p class="mb-1"><strong>Odr (F):</strong> 0</p> |
+                <p class="mb-1"><strong>Titles (F):</strong> {{ $totals['underProcessFiltered']['titles'] }}</p> |
+                <p class="mb-0"><strong>Qty (F):</strong> {{ $totals['underProcessFiltered']['qty'] }}</p>
+            </div>
         </div>
     </div>
+    @endif
 
     @php
     // Default active tab
@@ -388,7 +392,6 @@
             });
         });
 
-
         const modal = document.getElementById("imageModal");
         const modalImg = document.getElementById("modalImage");
         const closeBtn = modal.querySelector(".close-btn");
@@ -409,52 +412,49 @@
                 modal.style.display = "none";
             }
         });
-document.querySelectorAll(".exportForm").forEach(form => {
-    const exportType = form.querySelector(".exportType");
-    const exportButtons = form.querySelector(".exportButtons");
 
-    function updateExportButtons() {
-        const selected = exportType.value;
+        // document.querySelectorAll(".exportForm").forEach(form => {
+        //     const exportType = form.querySelector(".exportType");
+        //     const exportButtons = form.querySelector(".exportButtons");
 
-        if (selected === "without_image") {
-            exportButtons.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <select name="export_format" class="form-select me-2" style="min-height:50px">
-                        <option value="excel">only Export</option>
-                        <option value="pdf">ðŸ“„ Export PDF</option>
-                    </select>
-                    <button type="submit" class="btn btn-primary">Export</button>
-                </div>
-            `;
+        //     function updateExportButtons() {
+        //         const selected = exportType.value;
 
-           
-            const button = exportButtons.querySelector("button[type='submit']");
-            button.setAttribute("formaction", "{{ route('dashboard.exportExcel') }}");
+        //         if (selected === "without_image_xls") {
+        //             exportButtons.innerHTML = `
+        //                 <div class="d-flex align-items-center">
+        //                     <select name="export_format" class="form-select me-2" style="min-height:50px">
+        //                         <option value="excel">only Export</option>
+        //                         <option value="pdf">ðŸ“„ Export PDF</option>
+        //                     </select>
+        //                     <button type="submit" class="btn btn-primary">Export</button>
+        //                 </div>
+        //             `;
+                
+        //             const button = exportButtons.querySelector("button[type='submit']");
+        //             button.setAttribute("formaction", "{{ route('dashboard.exportExcel') }}");
+                
+        //             const formatSelect = exportButtons.querySelector("select[name='export_format']");
+        //             formatSelect.addEventListener("change", () => {
+        //                 if (formatSelect.value === "excel") {
+        //                     button.setAttribute("formaction", "{{ route('dashboard.exportExcel') }}");
+        //                 } else if (formatSelect.value === "pdf") {
+        //                     button.setAttribute("formaction", "{{ route('dashboard.exportPdf') }}");
+        //                 }
+        //             });
 
-          
-            const formatSelect = exportButtons.querySelector("select[name='export_format']");
-            formatSelect.addEventListener("change", () => {
-                if (formatSelect.value === "excel") {
-                    button.setAttribute("formaction", "{{ route('dashboard.exportExcel') }}");
-                } else if (formatSelect.value === "pdf") {
-                    button.setAttribute("formaction", "{{ route('dashboard.exportPdf') }}");
-                }
-            });
+        //         } else {
+        //             exportButtons.innerHTML = `
+        //                 <button type="submit" formaction="{{ route('dashboard.exportPdf') }}" class="btn btn-primary">
+        //                 ðŸ“„ Export PDF
+        //                 </button>
+        //             `;
+        //         }
+        //     }
 
-        } else {
-            exportButtons.innerHTML = `
-                <button type="submit" formaction="{{ route('dashboard.exportPdf') }}" class="btn btn-primary">
-                  ðŸ“„ Export PDF
-                </button>
-            `;
-        }
-    }
-
-    updateExportButtons();
-    exportType.addEventListener("change", updateExportButtons);
-});
-
-
+        //     updateExportButtons();
+        //     exportType.addEventListener("change", updateExportButtons);
+        // });
     });
 </script>
 
