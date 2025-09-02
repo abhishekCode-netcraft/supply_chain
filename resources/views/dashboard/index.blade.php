@@ -413,48 +413,6 @@
             }
         });
 
-        // document.querySelectorAll(".exportForm").forEach(form => {
-        //     const exportType = form.querySelector(".exportType");
-        //     const exportButtons = form.querySelector(".exportButtons");
-
-        //     function updateExportButtons() {
-        //         const selected = exportType.value;
-
-        //         if (selected === "without_image_xls") {
-        //             exportButtons.innerHTML = `
-        //                 <div class="d-flex align-items-center">
-        //                     <select name="export_format" class="form-select me-2" style="min-height:50px">
-        //                         <option value="excel">only Export</option>
-        //                         <option value="pdf">ðŸ“„ Export PDF</option>
-        //                     </select>
-        //                     <button type="submit" class="btn btn-primary">Export</button>
-        //                 </div>
-        //             `;
-                
-        //             const button = exportButtons.querySelector("button[type='submit']");
-        //             button.setAttribute("formaction", "{{ route('dashboard.exportExcel') }}");
-                
-        //             const formatSelect = exportButtons.querySelector("select[name='export_format']");
-        //             formatSelect.addEventListener("change", () => {
-        //                 if (formatSelect.value === "excel") {
-        //                     button.setAttribute("formaction", "{{ route('dashboard.exportExcel') }}");
-        //                 } else if (formatSelect.value === "pdf") {
-        //                     button.setAttribute("formaction", "{{ route('dashboard.exportPdf') }}");
-        //                 }
-        //             });
-
-        //         } else {
-        //             exportButtons.innerHTML = `
-        //                 <button type="submit" formaction="{{ route('dashboard.exportPdf') }}" class="btn btn-primary">
-        //                 ðŸ“„ Export PDF
-        //                 </button>
-        //             `;
-        //         }
-        //     }
-
-        //     updateExportButtons();
-        //     exportType.addEventListener("change", updateExportButtons);
-        // });
     });
 </script>
 
