@@ -86,6 +86,19 @@
           </div>
         </div>
       </div>
+ <div class="mt-3">
+    <label class="form-label">{{ __('OTP Features') }}</span></label>
+    <select class="form-control @error('otp_feature') is-invalid @enderror" name="otp_feature" required>
+        <option value="1" {{ old('otp_feature') == "1" ? 'selected' : '' }}>On - Login Via OTP</option>
+        <option value="0" {{ old('otp_feature') == "0" ? 'selected' : '' }}>Off - No OTP Required</option>
+    </select>
+
+    @error('otp_feature')
+    <span class="invalid-feedback" role="alert">
+        <strong>{{ $message }}</strong>
+    </span>
+    @enderror
+</div>
 
       {{-- Security --}}
       <div class="mt-3">

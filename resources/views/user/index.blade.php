@@ -32,6 +32,7 @@
             <th>Business Name/ Email</th>
             <th>Business Address</th>
             <th>Email Verified</th>
+             <th>OTP Features</th>
             <th>Active</th>
             <th>Role</th>
             <th width="220">Actions</th>
@@ -60,6 +61,7 @@
               <span class="badge bg-warning text-dark">Pending</span>
               @endif
             </td>
+               <td>{{ $u->otp_feature ? 'Yes' : 'No' }}</td>
             <td>
               <form method="POST" action="{{ route('users.updateStatus', $u->id) }}" class="d-flex align-items-center" style="margin-left: 10px;">
                 @csrf

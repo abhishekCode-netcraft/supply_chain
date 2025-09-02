@@ -129,7 +129,7 @@ class UserController extends Controller
             'email_verified_at' => now(),
             'is_active' => false,
             'email_verification_code' => null,
-            'status'=>1
+            'status' => 1
         ]);
 
         session()->forget('register_data');
@@ -152,6 +152,8 @@ class UserController extends Controller
             'business_phone'   => 'nullable|digits_between:8,15',
             'personal_upload'  => 'nullable|file',
             'business_upload'  => 'nullable|file',
+            'otp_feature' => 'required|in:0,1',
+
 
         ]);
 
@@ -181,7 +183,9 @@ class UserController extends Controller
             'email_verification_code' => null,
             'email_verified_at' => now(),
             'is_active' => 1,
-            'status'=>1
+            'status' => 1,
+            'otp_feature'              => $request->otp_feature,
+
         ]);
 
         // Send email verification button to user:
@@ -262,6 +266,7 @@ class UserController extends Controller
             'order_date_max'       => 'nullable|numeric',
             'underProcess_order_date_min'       => 'nullable|numeric',
             'underProcess_order_date_max'       => 'nullable|numeric',
+            'otp_feature'      => 'required|in:0,1',
         ]);
 
 
@@ -296,6 +301,9 @@ class UserController extends Controller
         $user->order_date_max = $request->order_date_max;
         $user->underProcess_order_date_min = $request->underProcess_order_date_min;
         $user->underProcess_order_date_max = $request->underProcess_order_date_max;
+            $user->otp_feature      = $request->otp_feature;
+
+
         $user->save();
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');

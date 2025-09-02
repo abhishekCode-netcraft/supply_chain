@@ -132,7 +132,7 @@
                 class="form-control"
                 placeholder="Enter Unshipped order date in numbers">
             </div>
-  
+
             <div class="col-md-6">
               <label class="form-label">Unshipped Order Date (Max)</label>
               <input type="number"
@@ -144,29 +144,42 @@
           </div>
         </div>
 
-          <div class="col-md-6">
-            <div class='row'>
-              <div class='col-md-6'>
-                  <label class="form-label">Under Process Order Date (Min)</label>
-                  <input type="number"
-                    name="underProcess_order_date_min"
-                    value="{{ old('underProcess_order_date_min', $user->underProcess_order_date_min) }}"
-                    class="form-control"
-                    placeholder="Enter Under Process order date in numbers">
-              </div>
+        <div class="col-md-6">
+          <div class='row'>
+            <div class='col-md-6'>
+              <label class="form-label">Under Process Order Date (Min)</label>
+              <input type="number"
+                name="underProcess_order_date_min"
+                value="{{ old('underProcess_order_date_min', $user->underProcess_order_date_min) }}"
+                class="form-control"
+                placeholder="Enter Under Process order date in numbers">
+            </div>
 
-              <div class='col-md-6'>
-                <label class="form-label">Under Process Order Date (Max)</label>
-                <input type="number"
-                  name="underProcess_order_date_max"
-                  value="{{ old('underProcess_order_date_max', $user->underProcess_order_date_max) }}"
-                  class="form-control"
-                  placeholder="Enter Under Process order date in numbers">
-              </div>
+            <div class='col-md-6'>
+              <label class="form-label">Under Process Order Date (Max)</label>
+              <input type="number"
+                name="underProcess_order_date_max"
+                value="{{ old('underProcess_order_date_max', $user->underProcess_order_date_max) }}"
+                class="form-control"
+                placeholder="Enter Under Process order date in numbers">
             </div>
           </div>
+        </div>
       </div>
 
+  <div class="mt-3">
+        <label class="form-label">{{ __('OTP Features') }}</label>
+        <select class="form-control" name="otp_feature">
+          <option value=1 {{ $user->otp_feature == 1 ? 'selected' : '' }}>On - Login Via OTP</option>
+          <option value=0 {{ $user->otp_feature == 0 ? 'selected' : '' }}>Off - No OTP Required</option>
+        </select>
+
+        @error('otp_feature')
+        <span class="invalid-feedback" role="alert">
+          <strong>{{ $message }}</strong>
+        </span>
+        @enderror
+      </div>
       {{-- Security --}}
       <div class="mt-3">
         <h5 class="border-bottom pb-2 mb-3 fw-bold">Security</h5>
