@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\OrdersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Http;
 
 class DashboardController extends Controller
 {
@@ -191,7 +192,7 @@ class DashboardController extends Controller
 
 
             return [
-                'orders' => $ordersTotal, 
+                'orders' => $ordersTotal,
                 'titles' => $titlesTotal,
                 'qty'    => $qtyTotal,
             ];
@@ -237,7 +238,8 @@ class DashboardController extends Controller
             $page = $request->get('unshipped_page', 1);
             $ordersQuery = Order::with('items')
                 ->where('order_status', 'unshipped')
-                ->where('order_type', 'products');
+                ->where('order_type', 'products')
+                ->orderBy('created_at', 'desc');;
 
             if ($unshippedCutoff) {
                 $ordersQuery->where('created_at', '<', $unshippedCutoff);
@@ -257,7 +259,8 @@ class DashboardController extends Controller
             $page = $request->get('underprocess_page', 1);
             $ordersQuery = Order::with('items')
                 ->where('order_status', 'under_process')
-                ->where('order_type', 'products');
+                ->where('order_type', 'products')
+                ->orderBy('created_at', 'desc');;
 
             if ($underProcessCutoff) {
                 $ordersQuery->where('created_at', '<', $underProcessCutoff);
@@ -319,11 +322,13 @@ class DashboardController extends Controller
             $orders = Order::with('items')
                 ->where('order_status', 'unshipped')
                 ->where('order_type', 'products')
+                ->orderBy('created_at', 'desc')
                 ->get();
         } else {
             $orders = Order::with('items')
                 ->where('order_status', 'under_process')
                 ->where('order_type', 'products')
+                ->orderBy('created_at', 'desc')
                 ->get();
         }
 
@@ -337,5 +342,24 @@ class DashboardController extends Controller
             ->values();
 
         return Excel::download(new OrdersExport($grouped, $tab), "{$tab}_items.xlsx");
+    }
+
+    public function downloadImage(Request $request)
+    {
+        $url = $request->query('url');
+
+        $response = Http::get($url);
+
+        if ($response->failed()) {
+            abort(404, "Image not found");
+        }
+        $contentType = $response->header('Content-Type', 'image/jpeg');
+        $extension = explode('/', $contentType)[1] ?? 'jpg';
+
+        $fileName = 'image_' . time() . '.' . $extension;
+
+        return response($response->body())
+            ->header('Content-Type', $contentType)
+            ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
     }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Auth;
 
+
 Auth::routes();
 
 Route::match(['get', 'post'], '/verify/otp', [LoginController::class, 'authenticateOTP'])
@@ -32,8 +33,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web']], function ()
 
     Route::get('/dashboard/export-pdf', [DashboardController::class, 'exportPdf'])
         ->name('dashboard.exportPdf');
-          Route::get('/dashboard/export-excel', [DashboardController::class, 'exportExcel'])
+    Route::get('/dashboard/export-excel', [DashboardController::class, 'exportExcel'])
         ->name('dashboard.exportExcel');
+    Route::get('/download-image', [DashboardController::class, 'downloadImage'])->name('download.image');
 
     // Profile Routes
     Route::group(['prefix' => 'profile'], function () {
@@ -51,7 +53,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web']], function ()
 
         Route::get('delete/{id}', [ProfileController::class, 'singleDelete'])
             ->name('profile.listing.delete.single');
-
     });
 
     Route::post('users/{user}/status', [UserController::class, 'updateStatus'])

@@ -39,8 +39,8 @@
                 <input type="hidden" name="{{ $page }}" value="{{ request($page, 1) }}">
 
                 <select name="sort" onchange="this.form.submit()">
-                    <option value="asc" {{ request()->sort == 'asc' ? 'selected' : '' }}>ASC</option>
-                    <option value="desc" {{ request()->sort == 'desc' ? 'selected' : '' }}>DESC</option>
+                    <option value="asc" {{ request()->sort == 'asc' ? 'selected' : '' }}>Old to New</option>
+                    <option value="desc" {{ request()->sort == 'desc' ? 'selected' : '' }}> New to Old</option>
                 </select>
             </form>
 

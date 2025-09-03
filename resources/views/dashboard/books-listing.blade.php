@@ -22,6 +22,9 @@
 
 
         </a>
+          <a href="{{ route('download.image', ['url' => $item->clean_thumb]) }}"  class="btn btn-sm btn-primary mt-1">
+            ⬇️ Download
+        </a>
     </div>
     <div class="card-body text-center p-2">
         <h6 class="card-title mb-0">
