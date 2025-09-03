@@ -2,6 +2,7 @@
 
 @section('title', __("Dashboard"))
 
+@can('Manage User')
 @section('content')
 
 <div class="card shadow-sm">
@@ -133,3 +134,4 @@
     });
   </script>
 @endpush
+@endcan

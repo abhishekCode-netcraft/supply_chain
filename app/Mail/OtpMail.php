@@ -33,7 +33,7 @@ class OtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->msg ? $this-> name.' has tried to access Listing Portal From Non Registered PC' : 'OTP For Login Listing Portal',
+            subject: $this->msg ? $this-> name.' has tried to access Listing Portal From Non Registered PC' : 'OTP For Login',
         );
     }
 

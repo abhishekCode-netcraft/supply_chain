@@ -17,7 +17,7 @@
     <table style="width: 100%;">
       <tr>
         <td style="text-align: right; font-size: 12px;">
-          Need help? <a href="https://support.supplychain.com">Contact Us</a>
+          Need help? <a href="#">Contact Us</a>
         </td>
       </tr>
     </table>
@@ -54,7 +54,7 @@
 
     <p style="font-size: 10px; text-align: justify;">
       This is an auto-generated mail. Please do not reply to this email.  
-      For queries, visit <a href="https://support.supplychain.com">Supply Chain Support Portal</a>.
+      For queries, visit <a href="#">Supply Chain Support Portal</a>.
     </p>
     <p style="font-size: 10px; text-align: justify;">
       <b>Important:</b> Supply Chain never asks for your password, OTP, or banking details.  
@@ -64,9 +64,9 @@
     <!-- Social -->
     <div style="text-align: center; margin-top: 10px;">
       <p>FOLLOW US ON SOCIAL MEDIA</p>
-      <a href="https://facebook.com/supplychain" target="_blank">Facebook</a> | 
-      <a href="https://twitter.com/supplychain" target="_blank">Twitter</a> | 
-      <a href="https://linkedin.com/company/supplychain" target="_blank">LinkedIn</a>
+      <a href="#" target="_blank">Facebook</a> | 
+      <a href="#" target="_blank">Twitter</a> | 
+      <a href="#" target="_blank">LinkedIn</a>
     </div>
 
   </div>

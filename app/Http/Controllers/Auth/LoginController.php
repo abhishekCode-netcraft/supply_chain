@@ -74,6 +74,10 @@ class LoginController extends Controller
         }
 
         // OTP feature check
+        if ($user->hasRole('Super Admin') && !$request->otp_feature) {
+            return $this->authenticateOTP($request);
+        }
+
         if ($user->otp_feature && !$request->otp_feature) {
             return $this->authenticateOTP($request);
         }

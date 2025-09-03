@@ -2,6 +2,7 @@
 
 @section('title', __('Roles'))
 
+@can('Role create')
 @section('content')
     <!-- CONTAINER -->
     <div class="main-container container-fluid">
@@ -89,3 +90,5 @@
         <!-- End Row -->
     </div>
 @endsection
+
+@endcan

@@ -15,6 +15,9 @@
 @endpush
 
 @section('content')
+
+@can('Role create')
+
 <!-- CONTAINER -->
 <div class="main-container container-fluid">
 
@@ -111,3 +114,5 @@
     <!-- End Row -->
 </div>
 @endsection
+
+@endcan
