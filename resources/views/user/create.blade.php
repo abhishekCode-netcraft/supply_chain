@@ -1,6 +1,9 @@
 @extends('layouts.master')
 
 @section('title', __("Add User"))
+
+@can('Manage User')
+
 @section('content')
 <div class="card shadow-sm">
   <div class="card-body">
@@ -129,3 +132,5 @@
   </div>
 </div>
 @endsection
+
+@endcan

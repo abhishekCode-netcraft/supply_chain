@@ -27,7 +27,7 @@ class WelcomeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '📢 Congratulation: Confirmation of Your Freelance Listing Account',
+            subject: '📢 Congratulation: Confirmation of Your Freelance Supply Chain Account',
         );
     }
 

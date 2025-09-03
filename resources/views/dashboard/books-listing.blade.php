@@ -24,7 +24,7 @@
         </a>
     </div>
     <div class="card-body text-center p-2">
-        <h6 class="card-title mb-0">
+        <h6 class="card-title mb-0" >
             <span class="short-title">{{ \Illuminate\Support\Str::limit($item->title, 40) }}</span>
             <span class="full-title d-none">{{ $item->title }}</span>
             @if(strlen($item->title) > 40)
@@ -37,6 +37,3 @@
 <p>No unshipped items found.</p>
 @endforelse
 
-<div class="d-flex justify-content-center my-4">
-    {{ $data->appends(request()->except('unshipped_page'))->links() }}
-</div>

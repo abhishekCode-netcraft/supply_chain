@@ -187,7 +187,7 @@ class DashboardController extends Controller
 
             $titlesTotal = $allItems->unique('product_id')->count();
             $qtyTotal    = $allItems->count();
-            $ordersTotal = $allItems->count();
+            $ordersTotal = $orders->count();
 
 
             return [

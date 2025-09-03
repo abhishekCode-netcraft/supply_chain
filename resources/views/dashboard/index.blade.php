@@ -276,6 +276,8 @@
 </style>
 @endpush
 
+@can('Dashboard')
+
 @section('content')
 
 <div class="main-container container-fluid">
@@ -341,26 +343,32 @@
     </ul>
 
     <div class="tab-content" id="orderTabsContent">
+        @can('Dashboard -> Awaiting')
         <div class="tab-pane fade {{ $activeTab == 'unshipped' ? 'show active' : '' }}" id="unshipped" role="tabpanel">
             @include('dashboard.filters', ['name' => 'search_unshipped', 'tab' => 'unshipped', 'page' => 'unshipped_page'])
 
             <div class="card-grid">
-                @can('Dashboard -> Awaiting')
                 @include('dashboard.books-listing', ['data' => $unshipped])
-                @endcan
+            </div>
+            <div class="d-flex justify-content-center my-4">
+                {{ $unshipped->appends(request()->except('unshipped_page'))->links() }}
             </div>
         </div>
+        @endcan
 
         {{-- Under Process --}}
+        @can('Dashboard -> Processing')
         <div class="tab-pane fade {{ $activeTab == 'underprocess' ? 'show active' : '' }}" id="underprocess" role="tabpanel">
             @include('dashboard.filters', ['name' => 'search_underprocess', 'tab' => 'underprocess', 'page' => 'underprocess_page'])
 
             <div class="card-grid">
-                @can('Dashboard -> Processing')
                 @include('dashboard.books-listing', ['data' => $underProcess])
-                @endcan
+            </div>
+            <div class="d-flex justify-content-center my-4">
+                {{ $underProcess->appends(request()->except('unshipped_page'))->links() }}
             </div>
         </div>
+        @endcan
     </div>
 </div>
 
@@ -410,6 +418,6 @@
     });
 </script>
 
-
-
 @endpush
+
+@endcan
