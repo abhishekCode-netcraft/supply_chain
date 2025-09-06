@@ -79,7 +79,23 @@ class UserController extends Controller
         }
         $verificationCode = Str::random(40); // unique code
 
-        session()->put('register_data', [
+        // session()->put('register_data', [
+        //     'name' => $request->name,
+        //     'email' => $request->email,
+        //     'mobile' => $request->mobile,
+        //     'whatsapp_no' => $request->whatsapp,
+        //     'password' => Hash::make($request->password),
+        //     'alternate_no' => $request->alternate_no,
+        //     'business_name' => $request->business_name,
+        //     'business_address' => $request->business_address,
+        //     'business_email' => $request->business_email,
+        //     'business_phone' => $request->business_phone,
+        //     'personal_upload' => $personalFilePath,
+        //     'business_upload' => $businessFilePath,
+        //     'verification_code' => $verificationCode,
+        // ]);
+
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'mobile' => $request->mobile,
@@ -92,7 +108,10 @@ class UserController extends Controller
             'business_phone' => $request->business_phone,
             'personal_upload' => $personalFilePath,
             'business_upload' => $businessFilePath,
-            'verification_code' => $verificationCode,
+            'email_verification_code' => $verificationCode,
+            'email_verified_at' => null,
+            'is_active' => false,
+            'status' => 1
         ]);
         // send verification link
 
@@ -106,33 +125,47 @@ class UserController extends Controller
 
     public function verifyEmail($code)
     {
-        $data = session()->get('register_data');
+        // $data = session()->get('register_data');
 
-        if (!$data || $data['verification_code'] !== $code) {
+        // if (!$data || $data['verification_code'] !== $code) {
+        //     return redirect()->route('login')->with('error', 'Invalid or expired verification link.');
+        // }
+
+        // // ab yahi user create hoga
+        // $user = User::create([
+        //     'name' => $data['name'],
+        //     'email' => $data['email'],
+        //     'mobile' => $data['mobile'],
+        //     'whatsapp_no' => $data['whatsapp_no'],
+        //     'password' => $data['password'],
+        //     'alternate_no' => $data['alternate_no'],
+        //     'business_name' => $data['business_name'],
+        //     'business_address' => $data['business_address'],
+        //     'business_email' => $data['business_email'],
+        //     'business_phone' => $data['business_phone'],
+        //     'personal_upload' => $data['personal_upload'],
+        //     'business_upload' => $data['business_upload'],
+        //     'email_verified_at' => now(),
+        //     'is_active' => false,
+        //     'email_verification_code' => null,
+        //     'status' => 1
+        // ]);
+
+        // session()->forget('register_data');
+
+        $user = User::where('email_verification_code', $code)->first();
+
+        if (!$user) {
             return redirect()->route('login')->with('error', 'Invalid or expired verification link.');
         }
 
-        // ab yahi user create hoga
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'mobile' => $data['mobile'],
-            'whatsapp_no' => $data['whatsapp_no'],
-            'password' => $data['password'],
-            'alternate_no' => $data['alternate_no'],
-            'business_name' => $data['business_name'],
-            'business_address' => $data['business_address'],
-            'business_email' => $data['business_email'],
-            'business_phone' => $data['business_phone'],
-            'personal_upload' => $data['personal_upload'],
-            'business_upload' => $data['business_upload'],
+     
+        $user->update([
             'email_verified_at' => now(),
-            'is_active' => false,
             'email_verification_code' => null,
-            'status' => 1
         ]);
 
-        session()->forget('register_data');
+        return redirect()->route('login')->with('success', 'Your email has been verified! Please wait for admin approval.');
 
         return redirect()->route('login')->with('success', 'Your email has been verified! Please wait for admin approval.');
     }
@@ -301,7 +334,7 @@ class UserController extends Controller
         $user->order_date_max = $request->order_date_max;
         $user->underProcess_order_date_min = $request->underProcess_order_date_min;
         $user->underProcess_order_date_max = $request->underProcess_order_date_max;
-            $user->otp_feature      = $request->otp_feature;
+        $user->otp_feature      = $request->otp_feature;
 
 
         $user->save();

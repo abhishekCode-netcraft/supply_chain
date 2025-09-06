@@ -222,7 +222,7 @@ class DashboardController extends Controller
     {
         $tab = $request->get('tab', 'unshipped');
         $exportType = $request->get('export_type', 'with_image');
-        $perPage = 50;
+        $perPage = 20;
 
         $user = Auth::user();
 
