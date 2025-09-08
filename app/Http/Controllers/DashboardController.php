@@ -58,6 +58,7 @@ class DashboardController extends Controller
 
         $fromDate = request()->get('from_date');
         $toDate   = request()->get('to_date');
+        $paginate = request()->get('paginate') ? request()->get('paginate') : 50;
 
 
         $fromDateMs = $fromDate ? Carbon::parse($fromDate)->startOfDay()->timestamp * 1000 : null;
@@ -112,7 +113,9 @@ class DashboardController extends Controller
             $unshippedQuery->where('created_at', '>', $unshippedCutMax);
         }
 
-        $unshippedQuery->orderBy('created_at', request()->get('sort'));
+        $sort = request()->get('sort') ? request()->get('sort') : 'desc';
+
+        $unshippedQuery->orderBy('created_at', $sort);
 
         if ($fromDateMs) {
             $unshippedQuery->where('created_at', '>=', $fromDateMs);
@@ -132,7 +135,7 @@ class DashboardController extends Controller
             });
         }
 
-        $unshipped = $groupAndPaginate($unshippedOrders, 50, 'unshipped_page');
+        $unshipped = $groupAndPaginate($unshippedOrders, $paginate, 'unshipped_page');
 
         // -----------------------
         // ✅ Under Process Orders
@@ -149,7 +152,9 @@ class DashboardController extends Controller
             $underProcessQuery->where('created_at', '>', $underProcessCutMax);
         }
 
-        $underProcessQuery->orderBy('created_at', request()->get('sort'));
+        $sort = request()->get('sort') ? request()->get('sort') : 'desc';
+
+        $underProcessQuery->orderBy('created_at', $sort);
 
         if ($fromDateMs) {
             $underProcessQuery->where('created_at', '>=', $fromDateMs);
@@ -168,7 +173,7 @@ class DashboardController extends Controller
             });
         }
 
-        $underProcess = $groupAndPaginate($underProcessOrders, 50, 'underprocess_page');
+        $underProcess = $groupAndPaginate($underProcessOrders, $paginate, 'underprocess_page');
 
         $calcTotals = function ($status, $cutMin = null, $cutMax = null) use ($fromDateMs, $toDateMs) {
             $query = \App\Models\Order::with('items')

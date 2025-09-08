@@ -53,7 +53,7 @@
             <li><a href="#contact" class="menu-links">Contact</a></li>
             <li><a href="https://support.exam360.in/freelance-partner" class="menu-links">FREELANCE</a></li>
             <li><a href="{{ route('register') }}" class="btn-br bg-btn5 btshad-b2 lnk">Signup <span class="circle"></span></a> </li>
-            <li><a href="{{ !auth() ->check() ? route('login') : route('dashboard') }}" class="btn-br bg-btn5 btshad-b2 lnk">Office Login <span class="circle"></span></a> </li>
+            <li><a href="{{ !auth() ->check() ? route('login') : route('dashboard', ['sort' => 'desc', 'tab' => 'unshipped', 'paginate' => 50]) }}" class="btn-br bg-btn5 btshad-b2 lnk">Office Login <span class="circle"></span></a> </li>
           </ul>
         </div>
         <div class="mobile-menu2">
@@ -72,7 +72,7 @@
             <li><a href="#contact" class="menu-links">Contact</a></li>
             <li><a href="https://support.exam360.in/freelance-partner">FREELANCE</a></li>
             <li><a href="{{ route('register') }}" class="btn-br bg-btn5 btshad-b2 lnk">Signup <span class="circle"></span></a> </li>
-            <li><a href="{{ !auth() ->check() ? route('login') : route('dashboard') }}" class="btn-br bg-btn5 btshad-b2 lnk">Office Login <span class="circle"></span></a> </li>
+            <li><a href="{{ !auth() ->check() ? route('login') : route('dashboard', ['sort' => 'desc', 'tab' => 'unshipped', 'paginate' => 50]) }}" class="btn-br bg-btn5 btshad-b2 lnk">Office Login <span class="circle"></span></a> </li>
         </ul>
         <ul class="bottom-nav">
           <li class="prb">
@@ -112,9 +112,9 @@
         <div class="row">
           <div class="col-lg-6 v-center">
             <div class="header-heading">
-              <span class="title- wow fadeInUp" data-wow-delay=".1s">Start Selling Today</span>
-              <h1 class="wow fadeInUp" data-wow-delay=".2s"><span>List Your Products</span> On EXAM360</h1>
-              <p class="wow fadeInUp" data-wow-delay=".4s">Product listing on Exam360 includes detailed product information like category, brand, features, specifications, images, and price for easy shopping.</p>
+              <span class="title- wow fadeInUp" data-wow-delay=".1s">Become Our Supply Partner</span>
+              <h1 class="wow fadeInUp" data-wow-delay=".2s"><span>Want To Highlight</span> Your Products?</h1>
+              <p class="wow fadeInUp" data-wow-delay=".4s">✨ Want your products to stand out? Highlight them with Exam360! Just supply us with your items, and we’ll showcase them in front of thousands of eager buyers.</p>
               <a href="#contact" class="btn-main bg-btn lnk wow fadeInUp" data-wow-delay=".6s">Connect with us <i class="fas fa-chevron-right fa-icon"></i><span class="circle"></span></a>
             </div>
           </div>

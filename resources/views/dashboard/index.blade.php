@@ -351,7 +351,10 @@
                 @include('dashboard.books-listing', ['data' => $unshipped])
             </div>
             <div class="d-flex justify-content-center my-4">
-                {{ $unshipped->appends(request()->except('unshipped_page'))->links() }}
+                {{ $unshipped->appends(array_merge(request()->except('underprocess_page'), [
+                        'tab' => 'unshipped'
+                    ]))
+                    ->links() }}
             </div>
         </div>
         @endcan
@@ -365,7 +368,11 @@
                 @include('dashboard.books-listing', ['data' => $underProcess])
             </div>
             <div class="d-flex justify-content-center my-4">
-                {{ $underProcess->appends(request()->except('unshipped_page'))->links() }}
+                {{ $underProcess
+                    ->appends(array_merge(request()->except('unshipped_page'), [
+                        'tab' => 'underprocess'
+                    ]))
+                    ->links() }}
             </div>
         </div>
         @endcan

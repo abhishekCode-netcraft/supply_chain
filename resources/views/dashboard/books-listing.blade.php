@@ -22,8 +22,8 @@
 
 
         </a>
-          <a href="{{ route('download.image', ['url' => $item->clean_thumb]) }}"  class="btn btn-sm btn-primary mt-1">
-            ⬇️ Download
+          <a href="{{ route('download.image', ['url' => $item->clean_thumb]) }}"  class="me-2 d-flex justify-content-end">
+            <i class="fa fa-download"></i>
         </a>
     </div>
     <div class="card-body text-center p-2">

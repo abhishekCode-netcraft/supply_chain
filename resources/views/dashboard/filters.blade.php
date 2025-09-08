@@ -28,7 +28,7 @@
 
                 <div  class="exportButtons  d-flex">
                     <button type="submit" formaction="{{ route('dashboard.exportPdf') }}" class="btn btn-primary">
-                        ðŸ“„ Export
+                        <i class='fa fa-file'></i> Export
                         </button>
                 </div>
             </form>
@@ -37,6 +37,13 @@
                 <input type="hidden" name="tab" value="{{ $tab }}">
                 <input type="hidden" name="{{ $name }}" value="{{ $searchUnshipped }}">
                 <input type="hidden" name="{{ $page }}" value="{{ request($page, 1) }}">
+
+                <select name="paginate" onchange="this.form.submit()">
+                    <option {{ request()->paginate == 50 ? 'selected' : '' }} value=50>50</option>
+                    <option {{ request()->paginate == 100 ? 'selected' : '' }} value=100>100</option>
+                    <option {{ request()->paginate == 150 ? 'selected' : '' }} value=150>150</option>
+                    <option {{ request()->paginate == 200 ? 'selected' : '' }} value=200>200</option>
+                </select>
 
                 <select name="sort" onchange="this.form.submit()">
                     <option value="asc" {{ request()->sort == 'asc' ? 'selected' : '' }}>Old to New</option>

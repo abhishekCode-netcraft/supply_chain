@@ -41,7 +41,8 @@ class User extends Authenticatable
         "order_date_min",
         "order_date_max",
         "underProcess_order_date_min",
-        "underProcess_order_date_max"
+        "underProcess_order_date_max",
+        "order_last_updated"
     ];
 
 
