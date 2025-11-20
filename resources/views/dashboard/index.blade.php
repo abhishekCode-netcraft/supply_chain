@@ -283,11 +283,11 @@
 <div class="main-container container-fluid">
 
     @if(auth()->user()->hasRole('Super Admin'))
-    <div class="mb-4 d-flex justify-content-around gap-3">
-        <div class="total-card bg-light" style="margin-right: 20px;">
+    <div class="mb-4 d-flex justify-content-around gap-3 flex-wrap">
+        <div class="total-card bg-light">
             <h6 class="mb-2 fw-bold text-white text-center" style="background: linear-gradient(135deg, #dc2626, #7f1d1d);">AWAITING</h6>
             <!--<hr>-->
-            <div class='d-flex gap-2'>
+            <div class='d-flex gap-2 overflow-scroll'>
                 <p class="mb-1"><strong>Odr (UF):</strong> {{ $totals['unshippedUF']['orders'] }}</p> |
                 <p class="mb-1"><strong>Titles (UF):</strong> {{ $totals['unshippedUF']['titles'] }}</p> |
                 <p class="mb-1"><strong>Qty (UF):</strong> {{ $totals['unshippedUF']['qty'] }}</p> |
@@ -300,7 +300,7 @@
         <div class="total-card bg-light">
             <h6 class="mb-2 fw-bold text-white text-center" style="background: linear-gradient(135deg, #dc2626, #7f1d1d);">PROCESSING</h6>
             <!--<hr>-->
-            <div class='d-flex gap-2'>
+            <div class='d-flex gap-2 overflow-scroll'>
                 <p class="mb-1"><strong>Odr (UF):</strong> {{ $totals['underProcessUF']['orders'] }}</p> |
                 <p class="mb-1"><strong>Titles (UF):</strong> {{ $totals['underProcessUF']['titles'] }}</p> |
                 <p class="mb-1"><strong>Qty (UF):</strong> {{ $totals['underProcessUF']['qty'] }}</p> |
@@ -351,7 +351,8 @@
                 @include('dashboard.books-listing', ['data' => $unshipped])
             </div>
             <div class="d-flex justify-content-center my-4">
-                {{ $unshipped->appends(array_merge(request()->except('underprocess_page'), [
+                {{ $unshipped
+                    ->appends(array_merge(request()->except('underprocess_page'), [
                         'tab' => 'unshipped'
                     ]))
                     ->links() }}

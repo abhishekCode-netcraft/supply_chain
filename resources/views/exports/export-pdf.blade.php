@@ -63,6 +63,13 @@
             border-radius: 10px;
             line-height: 1;
         }
+        
+        .badge-count {
+            left: -2px;
+            border-radius: 0px !important;
+            right: inherit !important;
+            background-color: grey !important;
+        }
 
         .card-title {
             font-size: 8pt;
@@ -77,8 +84,9 @@
     <table>
         <tr>
             @php $col = 0; @endphp
-            @foreach($items as $item)
+            @foreach($items as $key => $item)
                 <td>
+                    <div class="badge badge-count">SL. {{ ++$key }}</div>
                     <div class="img-holder">
                         @php
                             $src = $item->thumb ?: $item->clean_thumb;

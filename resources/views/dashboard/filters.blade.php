@@ -4,6 +4,8 @@
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <form method="GET" class="search-bar">
                 <input type="hidden" name="tab" value="{{ $tab }}">
+                <input type="hidden" name="sort" value="{{ request()->sort }}">
+                <input type="hidden" name="paginate" value="{{ request('paginate') }}">
 
                 <input type="text"
                     name="{{ $name }}"
@@ -19,11 +21,12 @@
                 <input type="hidden" name="tab" value="{{ $tab }}">
                 <input type="hidden" name="{{ $name }}" value="{{ $searchUnshipped }}">
                 <input type="hidden" name="{{ $page }}" value="{{ request($page, 1) }}">
+                <input type="hidden" name="paginate" value="{{ request('paginate') }}">
 
                 <select class="exportType" name="export_type">
-                    <option value="with_image">With Images</option>
-                    <option value="without_image">Without Images (PDF)</option>
-                    <option value="without_image_xls">Without Images (XLS)</option>
+                    <option value="with_image">With Images -  Per page (PDF)</option>
+                    <option value="without_image">Without Images - All (PDF)</option>
+                    <option value="without_image_xls">Without Images - All (XLS)</option>
                 </select>
 
                 <div  class="exportButtons  d-flex">
@@ -37,7 +40,7 @@
                 <input type="hidden" name="tab" value="{{ $tab }}">
                 <input type="hidden" name="{{ $name }}" value="{{ $searchUnshipped }}">
                 <input type="hidden" name="{{ $page }}" value="{{ request($page, 1) }}">
-
+                
                 <select name="paginate" onchange="this.form.submit()">
                     <option {{ request()->paginate == 50 ? 'selected' : '' }} value=50>50</option>
                     <option {{ request()->paginate == 100 ? 'selected' : '' }} value=100>100</option>
@@ -51,11 +54,12 @@
                 </select>
             </form>
 
-            <form method="GET" class="mt-2">
+            <form method="GET" class="mt-2 d-flex flex-wrap align-items-center" style='grid-gap:10px;'>
                 <input type="hidden" name="tab" value="{{ $tab }}">
                 <input type="hidden" name="{{ $name }}" value="{{ $searchUnshipped }}">
                 <input type="hidden" name="{{ $page }}" value="{{ request($page, 1) }}">
                 <input type="hidden" name="sort" value="{{ request()->sort }}">
+                <input type="hidden" name="paginate" value="{{ request('paginate') }}">
 
                 <label class='fw-bold'> From
                     <input type='date' name='from_date' class='form-control' value="{{ request('from_date') }}" />
@@ -64,7 +68,7 @@
                     <input type='date' name='to_date' class='form-control' value="{{ request('to_date') }}" />
                 </label>
 
-                <button type="submit" class='btn btn-primary'>Search</button>
+                <button type="submit" class='btn btn-primary mt-2'>Search</button>
             </form>
         </div>
     </div>

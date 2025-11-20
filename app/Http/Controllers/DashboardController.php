@@ -60,10 +60,8 @@ class DashboardController extends Controller
         $toDate   = request()->get('to_date');
         $paginate = request()->get('paginate') ? request()->get('paginate') : 50;
 
-
         $fromDateMs = $fromDate ? Carbon::parse($fromDate)->startOfDay()->timestamp * 1000 : null;
         $toDateMs   = $toDate ? Carbon::parse($toDate)->endOfDay()->timestamp * 1000 : null;
-
 
         $groupAndPaginate = function ($orders, $perPage = 50, $pageName = 'page') {
             $grouped = $orders->flatMap->items
@@ -74,7 +72,6 @@ class DashboardController extends Controller
                     $dates = $items->map(function ($itm) {
                         return $itm->order->created_at;
                     })->sortDesc()->values();
-
 
                     $firstItem->order_dates = $dates;
                     return $firstItem;
@@ -100,7 +97,7 @@ class DashboardController extends Controller
         // -----------------------
         // ✅ Unshipped Orders
         // -----------------------
-        $unshippedQuery = \App\Models\Order::with('items')
+        $unshippedQuery = \App\Models\Order::with('items', 'extra_payments')
             ->where('order_status', 'unshipped')
             ->where('order_type', 'products');
 
@@ -115,7 +112,9 @@ class DashboardController extends Controller
 
         $sort = request()->get('sort') ? request()->get('sort') : 'desc';
 
+        // if (request()->get('sort')) {
         $unshippedQuery->orderBy('created_at', $sort);
+        // }
 
         if ($fromDateMs) {
             $unshippedQuery->where('created_at', '>=', $fromDateMs);
@@ -140,7 +139,7 @@ class DashboardController extends Controller
         // -----------------------
         // ✅ Under Process Orders
         // -----------------------
-        $underProcessQuery = \App\Models\Order::with('items')
+        $underProcessQuery = \App\Models\Order::with('items', 'extra_payments')
             ->where('order_status', 'under_process')
             ->where('order_type', 'products');
 
@@ -154,7 +153,9 @@ class DashboardController extends Controller
 
         $sort = request()->get('sort') ? request()->get('sort') : 'desc';
 
+        // if (request()->get('sort')) {
         $underProcessQuery->orderBy('created_at', $sort);
+        // }
 
         if ($fromDateMs) {
             $underProcessQuery->where('created_at', '>=', $fromDateMs);
@@ -211,7 +212,6 @@ class DashboardController extends Controller
         $totals['underProcessUF'] = $calcTotals('under_process');
         $totals['underProcessFiltered'] = $calcTotals('under_process', $underProcessCutMin, $underProcessCutMax);
 
-
         return view('dashboard.index', compact(
             'unshipped',
             'underProcess',
@@ -222,12 +222,12 @@ class DashboardController extends Controller
         ));
     }
 
-
     public function exportPdf(Request $request)
     {
         $tab = $request->get('tab', 'unshipped');
         $exportType = $request->get('export_type', 'with_image');
-        $perPage = 20;
+        // $perPage = $request->get('paginate', 50);
+        $perPage = 50;
 
         $user = Auth::user();
 
@@ -325,17 +325,23 @@ class DashboardController extends Controller
 
         if ($tab === 'unshipped') {
             $orders = Order::with('items')
+                ->join('orders_items', 'orders_items.order_id', 'orders.order_id')
                 ->where('order_status', 'unshipped')
                 ->where('order_type', 'products')
-                ->orderBy('created_at', 'desc')
-                ->get();
+                ->orderBy('orders_items.created_at', 'desc');
         } else {
             $orders = Order::with('items')
+                ->join('orders_items', 'orders_items.order_id', 'orders.order_id')
                 ->where('order_status', 'under_process')
                 ->where('order_type', 'products')
-                ->orderBy('created_at', 'desc')
-                ->get();
+                ->orderBy('orders_items.created_at', 'desc');
         }
+
+        if (request()->search_unshipped) {
+            $orders->where('orders_items.title', 'LIKE', '%' . request()->search_unshipped . '%');
+        }
+
+        $orders = $orders->get();
 
         $grouped = $orders->flatMap->items
             ->groupBy('product_id')

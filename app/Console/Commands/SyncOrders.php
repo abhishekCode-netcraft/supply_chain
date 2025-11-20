@@ -7,6 +7,7 @@ use App\Models\ImportOrder;
 use App\Models\ImportOrderItem;
 use App\Models\OrderItem;
 use App\Models\Order;
+use App\Models\OrdersExtraPayment;
 use App\Models\User;
 use Carbon\Carbon;
 use DB;
@@ -32,10 +33,19 @@ class SyncOrders extends Command
      */
     public function handle()
     {
+        OrdersExtraPayment::truncate();
         OrderItem::truncate(); // first delete child records
         Order::truncate();     // then delete parent records
-        
-        // $orders = DB::connection('supply_chain')->table('orders')->get();
+            
+        DB::connection('supply_chain')
+            ->table('orders_extra_payments')
+            ->orderBy('order_id')
+            ->chunk(100, function ($orders) {
+                foreach ($orders as $order) {
+                    $data = (array) $order;
+                    DB::table('orders_extra_payments')->insert($data);
+                }
+            });
 
         DB::connection('supply_chain')->table('orders')
             ->where('order_type', 'products')
