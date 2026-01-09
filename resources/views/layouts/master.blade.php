@@ -108,6 +108,43 @@
     <!-- CUSTOM JS -->
     <script src="{{ asset('assets/js/custom.js') }}"></script>
 
+    <script>
+        $(document).ready(function () {
+            $('#run_sync').click(function() {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('order.sync') }}",
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(result) {
+                        localStorage.setItem('run_sync', result);
+                        location.reload();
+                    },
+                });
+            })
+        })
+
+        $.ajax({
+            type: "GET",
+            url: "{{ route('get.queues') }}",
+            headers: {
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                id: localStorage.getItem('run_sync'),
+            },
+            success: function(result) {
+                if (result) {
+                    $("#run_sync").html('Manully Updating');
+                    $("#run_sync").attr('disabled', true);
+                } else {
+                    $("#run_sync").html('Manully Update');
+                }
+            },
+        });
+    </script>
+
     @stack('js')
 </body>
 

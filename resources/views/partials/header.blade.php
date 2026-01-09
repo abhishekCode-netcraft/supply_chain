@@ -1,7 +1,10 @@
-<!-- app-Header -->
 <style>
     .header-brand-img {
         width: 250px;
+    }
+
+    #run_sync {
+        position: inherit;
     }
     
     @media (max-width: 800px) {
@@ -13,12 +16,6 @@
             display: block;
         }
     }
-    
-    /*@media (min-width: 767px) {*/
-    /*    .desktop_server_time {*/
-    /*        display:none;*/
-    /*    }*/
-    /*}*/
 </style>
 
 <div class="app-header header sticky">
@@ -44,7 +41,10 @@
                         </div>
                     </div>
                 </div>
-                <span class='desktop_server_time'><b>Server Last Updated: </b> @php echo \App\Models\User::find(1)->order_last_updated; @endphp</span>
+                <span class='desktop_server_time'>
+                    <b>Server Last Updated: </b> @php echo \App\Models\User::find(1)->order_last_updated; @endphp
+                    <button id='run_sync' class='btn btn-primary'>Manully Update</button>
+                </span>
                 <!-- SEARCH -->
                 <button class="navbar-toggler navresponsive-toggler d-lg-none ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent-4" aria-controls="navbarSupportedContent-4" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon fe fe-more-vertical"></span>
@@ -87,5 +87,5 @@
         </div>
     </div>
 </div>
-</div>
-<!-- /app-Header -->
+
+

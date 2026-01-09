@@ -73,14 +73,13 @@ class LoginController extends Controller
             return redirect()->route('login');
         }
 
-        // OTP feature check
-        if ($user->hasRole('Super Admin') && !$request->otp_feature) {
-            return $this->authenticateOTP($request);
-        }
+        // if ($user->hasRole('Super Admin') && !$request->otp_feature) {
+        //     return $this->authenticateOTP($request);
+        // }
 
-        if ($user->otp_feature && !$request->otp_feature) {
-            return $this->authenticateOTP($request);
-        }
+        // if ($user->otp_feature && !$request->otp_feature) {
+        //     return $this->authenticateOTP($request);
+        // }
 
         $oldSessions = $user->sessions->where('expire_at', '<', now());
         foreach ($oldSessions as $session) {

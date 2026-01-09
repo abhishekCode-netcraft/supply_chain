@@ -8,8 +8,11 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\OrdersExport;
+use App\Jobs\RunManualSync;
+use Illuminate\Support\Facades\Bus;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Http;
+use App\Models\Job;
 
 class DashboardController extends Controller
 {
@@ -372,5 +375,19 @@ class DashboardController extends Controller
         return response($response->body())
             ->header('Content-Type', $contentType)
             ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+    }
+
+    public function manualSync()
+    {
+        $job = new RunManualSync();
+
+        $jobId = Bus::dispatch($job);
+
+        return $jobId;
+    }
+
+    public function getQueues()
+    {
+        return Job::find(request()->id);
     }
 }

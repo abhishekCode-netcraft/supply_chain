@@ -64,6 +64,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web']], function ()
     Route::resource('users', UserController::class);
 
     Route::resource('roles', RoleController::class);
+
+    Route::post('order/sync', [DashboardController::class, 'manualSync'])
+        ->name('order.sync');
+
+    Route::get('queues', [DashboardController::class, 'getQueues'])
+        ->name('get.queues');
 });
 
 // Password Reset
